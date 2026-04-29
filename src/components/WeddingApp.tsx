@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { useForm, ValidationError } from '@formspree/react';
+import Envelope from './Envelope';
 
 const C = {
   en: {
@@ -405,7 +406,7 @@ export default function WeddingApp() {
     <>
       <audio ref={audioRef} src="/uploads/One Last Message.m4a" loop preload="auto" style={{ display: 'none' }} />
       <AudioButton started={started} audioRef={audioRef} />
-      <Splash c={c} onStart={() => setStarted(true)} />
+      <Envelope lang={lang} onOpen={() => setStarted(true)} />
       <div className={`lang${started ? ' show' : ''}`}>
         <button className={`lb${lang === 'en' ? ' on' : ''}`} onClick={() => setLang('en')}>EN</button>
         <button className={`lb${lang === 'id' ? ' on' : ''}`} onClick={() => setLang('id')}>ID</button>
