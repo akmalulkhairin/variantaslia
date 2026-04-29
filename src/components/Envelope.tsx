@@ -17,26 +17,28 @@ export default function Envelope({ onOpen, lang }: Props) {
     if (triggered.current) return;
     triggered.current = true;
     setPhase('opening');
-    onOpen(); // start audio ramp immediately
+    onOpen();
 
     // 1. flap lifts open
-    await animate('#flap', { rotateX: -180 }, { duration: 0.9, ease: [0.4, 0, 0.2, 1] });
+    await animate('#flap', { rotateX: -180 }, {
+      duration: 1.0,
+      ease: [0.4, 0, 0.2, 1],
+    });
 
-    // 2. card rises out of envelope
-    await animate('#card', { y: '-62%', opacity: 1 }, { duration: 0.85, ease: [0.16, 1, 0.3, 1] });
+    // 2. card rises — just enough to read it, no clipping
+    await animate('#card', { y: -180, opacity: 1 }, {
+      duration: 0.9,
+      ease: [0.16, 1, 0.3, 1],
+    });
 
-    // 3. brief pause — hold the moment
-    await new Promise(r => setTimeout(r, 420));
+    // 3. hold — let it breathe
+    await new Promise(r => setTimeout(r, 700));
 
-    // 4. card unfolds (scale up + fade envelope out simultaneously)
-    await Promise.all([
-      animate('#card', { scale: 1.12, y: '-68%' }, { duration: 0.5, ease: [0.4, 0, 0.2, 1] }),
-      animate('#envelope-body', { opacity: 0 }, { duration: 0.4, ease: 'easeIn' }),
-      animate('#flap', { opacity: 0 }, { duration: 0.3, ease: 'easeIn' }),
-    ]);
-
-    // 5. whole thing fades out
-    await animate(scope.current, { opacity: 0 }, { duration: 0.9, ease: 'easeInOut' });
+    // 4. clean fade out — no scale, no zoom
+    await animate(scope.current, { opacity: 0 }, {
+      duration: 1.1,
+      ease: 'easeInOut',
+    });
 
     setPhase('gone');
   };
@@ -52,7 +54,6 @@ export default function Envelope({ onOpen, lang }: Props) {
       animate={{ opacity: 1 }}
       transition={{ duration: 1.2, ease: 'easeOut' }}
     >
-      {/* hint */}
       <AnimatePresence>
         {phase === 'idle' && (
           <motion.div
@@ -60,55 +61,51 @@ export default function Envelope({ onOpen, lang }: Props) {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ delay: 1.4, duration: 0.8 }}
+            transition={{ delay: 1.2, duration: 0.8 }}
           >
             {label[lang]}
           </motion.div>
         )}
       </AnimatePresence>
 
-      {/* envelope wrapper — 3D perspective container */}
+      {/* perspective wrapper — centered in stage */}
       <div className="env-wrap">
 
-        {/* card inside envelope — starts hidden, rises on open */}
+        {/* card — starts hidden inside, rises above envelope */}
         <motion.div
           id="card"
           className="env-card"
-          initial={{ y: '0%', opacity: 0 }}
+          initial={{ y: 0, opacity: 0 }}
+          style={{ originX: '50%', originY: '100%' }}
         >
           <div className="env-card-inner">
-            {/* ornament */}
             <svg className="env-card-orn" viewBox="0 0 120 20" fill="none">
-              <line x1="0" y1="10" x2="120" y2="10" stroke="rgba(201,169,122,0.2)" strokeWidth="0.8"/>
-              <rect x="56" y="6" width="8" height="8" transform="rotate(45 60 10)" stroke="rgba(201,169,122,0.5)" strokeWidth="0.6" fill="none"/>
-              <circle cx="60" cy="10" r="1" fill="rgba(201,169,122,0.6)"/>
+              <line x1="0" y1="10" x2="120" y2="10" stroke="rgba(201,169,122,0.25)" strokeWidth="0.8"/>
+              <rect x="56" y="6" width="8" height="8" transform="rotate(45 60 10)" stroke="rgba(201,169,122,0.55)" strokeWidth="0.6" fill="none"/>
+              <circle cx="60" cy="10" r="1" fill="rgba(201,169,122,0.65)"/>
             </svg>
             <p className="env-card-label">Wedding Invitation</p>
             <p className="env-card-names">Taslia<span>&amp;</span>Varian</p>
             <p className="env-card-date">04 · June · 2026</p>
             <svg className="env-card-orn" viewBox="0 0 120 20" fill="none" style={{ transform: 'rotate(180deg)' }}>
-              <line x1="0" y1="10" x2="120" y2="10" stroke="rgba(201,169,122,0.2)" strokeWidth="0.8"/>
-              <rect x="56" y="6" width="8" height="8" transform="rotate(45 60 10)" stroke="rgba(201,169,122,0.5)" strokeWidth="0.6" fill="none"/>
-              <circle cx="60" cy="10" r="1" fill="rgba(201,169,122,0.6)"/>
+              <line x1="0" y1="10" x2="120" y2="10" stroke="rgba(201,169,122,0.25)" strokeWidth="0.8"/>
+              <rect x="56" y="6" width="8" height="8" transform="rotate(45 60 10)" stroke="rgba(201,169,122,0.55)" strokeWidth="0.6" fill="none"/>
+              <circle cx="60" cy="10" r="1" fill="rgba(201,169,122,0.65)"/>
             </svg>
           </div>
         </motion.div>
 
-        {/* envelope body — back face + side flaps */}
+        {/* envelope body */}
         <div id="envelope-body" className="env-body">
-          {/* left flap */}
           <div className="env-flap-side env-flap-left" />
-          {/* right flap */}
           <div className="env-flap-side env-flap-right" />
-          {/* bottom flap */}
           <div className="env-flap-bottom" />
-          {/* wax seal */}
           <div className="env-seal">
             <span className="env-seal-mono">T<small>&amp;</small>V</span>
           </div>
         </div>
 
-        {/* top flap — hinges open */}
+        {/* top flap */}
         <motion.div id="flap" className="env-flap-top" style={{ rotateX: 0 }} />
 
       </div>

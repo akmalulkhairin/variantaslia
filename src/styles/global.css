@@ -27,6 +27,7 @@ button:focus:not(:focus-visible) { outline: none; }
   background: var(--ink);
   display: flex; flex-direction: column; align-items: center; justify-content: center;
   cursor: pointer; user-select: none; -webkit-user-select: none;
+  padding: clamp(24px, 6vw, 80px);
 }
 
 .env-hint {
@@ -45,8 +46,9 @@ button:focus:not(:focus-visible) { outline: none; }
 
 /* card that rises out */
 .env-card {
-  position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
-  width: 88%; z-index: 1;
+  position: absolute;
+  bottom: 0; left: 9%; right: 9%;
+  z-index: 1;
   background: var(--parch2);
   box-shadow: 0 12px 48px rgba(0,0,0,0.5);
 }
