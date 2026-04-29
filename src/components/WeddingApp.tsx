@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import { useForm, ValidationError } from '@formspree/react';
 
 const C = {
   en: {
@@ -10,7 +11,7 @@ const C = {
     sb: 'She is from Aceh. He is from Bukittinggi, in the highlands of West Sumatra. They were far from home when they found each other at Leibniz Universität in Hannover, Germany — two Sumatran souls in a foreign city, and somehow, everything made sense.',
     gl: 'Hannover, Germany',
     gt: 'Moments together',
-    gc: ['Hannover', 'Together', 'Germany', 'Us'],
+    gc: ['Hannover, 2023', 'Together, 2023', 'Germany, 2023', 'Hannover, 2024', 'Together, 2024', 'Germany, 2024'],
     cs: 'save the date',
     cm: 'June',
     cl: 'Aceh · Indonesia',
@@ -25,7 +26,7 @@ const C = {
     sb: 'Taslia dari Aceh. Varian dari Bukittinggi, di dataran tinggi Sumatera Barat. Mereka jauh dari rumah ketika takdir mempertemukan keduanya di Leibniz Universität, Hannover, Jerman — dua jiwa Sumatra di kota asing, dan segalanya terasa seperti sudah seharusnya.',
     gl: 'Hannover, Jerman',
     gt: 'Kenangan dari Hannover',
-    gc: ['Hannover', 'Berdua', 'Jerman', 'Kami'],
+    gc: ['Hannover, 2023', 'Berdua, 2023', 'Jerman, 2023', 'Hannover, 2024', 'Berdua, 2024', 'Jerman, 2024'],
     cs: 'tandai tanggalnya',
     cm: 'Juni',
     cl: 'Aceh · Indonesia',
@@ -53,23 +54,58 @@ function useRv(threshold = 0.14) {
 
 function useAudio(started: boolean) {
   const ref = useRef<HTMLAudioElement>(null);
+  const rampRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
   useEffect(() => {
     if (!started) return;
     const a = ref.current;
     if (!a) return;
-    a.volume = 0; a.playbackRate = 1.1; a.loop = true;
+    a.volume = 0; a.playbackRate = 1.0; a.loop = true;
     a.play().then(() => {
-      const TARGET = 0.32, DURATION = 12000, STEPS = 80;
+      const TARGET = 0.28, DURATION = 16000, STEPS = 100;
       const step = TARGET / STEPS, interval = DURATION / STEPS;
       let n = 0;
-      const t = setInterval(() => {
+      rampRef.current = setInterval(() => {
         n++;
         a.volume = Math.min(TARGET, step * n);
-        if (n >= STEPS) clearInterval(t);
+        if (n >= STEPS && rampRef.current) clearInterval(rampRef.current);
       }, interval);
     }).catch(() => {});
   }, [started]);
-  return ref;
+
+  return { ref, rampRef };
+}
+
+function AudioButton({ started, audioRef }: { started: boolean; audioRef: React.RefObject<HTMLAudioElement | null> }) {
+  const [playing, setPlaying] = useState(true);
+
+  const toggle = () => {
+    const a = audioRef.current;
+    if (!a) return;
+    if (playing) { a.pause(); setPlaying(false); }
+    else { a.play().catch(() => {}); setPlaying(true); }
+  };
+
+  return (
+    <button
+      className={`audio-btn${started ? ' show' : ''}${playing ? ' playing' : ''}`}
+      onClick={toggle}
+      aria-label={playing ? 'Pause music' : 'Play music'}
+    >
+      <div className="audio-ring">
+        <div className="audio-icon">
+          {playing ? (
+            <span className="audio-waves">
+              <span className="aw" /><span className="aw" /><span className="aw" />
+            </span>
+          ) : (
+            <span className="audio-pause-icon" />
+          )}
+        </div>
+      </div>
+      <span className="audio-label">music</span>
+    </button>
+  );
 }
 
 function Ornament() {
@@ -203,6 +239,15 @@ function Story({ c }: { c: Copy }) {
   );
 }
 
+const PHOTOS = [
+  '/images/2023_1.jpeg',
+  '/images/2023_2.jpeg',
+  '/images/2023_3.jpeg',
+  '/images/2024_1.jpeg',
+  '/images/2024_2.jpeg',
+  '/images/2024_3.jpeg',
+];
+
 function Gallery({ c }: { c: Copy }) {
   const [rH, vH] = useRv();
   const [rG, vG] = useRv(0.08);
@@ -258,12 +303,13 @@ function Gallery({ c }: { c: Copy }) {
 
       <div ref={stripRef} className="strip-wrap">
         <div ref={rG} className="strip">
-          {[0, 1, 2, 3].map(i => (
-            <div key={i} className={`pol${vG ? ' drop' : ''}`}>
-              <div className="pol-img">
-                <span className="pol-img-ph">photo {i + 1}</span>
+          {PHOTOS.map((src, i) => (
+            <div key={i} className={`photo-card${vG ? ' drop' : ''}`} style={{ animationDelay: `${i * 0.08}s` }}>
+              <div className="photo-frame">
+                <img src={src} alt={c.gc[i]} loading="lazy" />
+                <div className="photo-overlay" />
               </div>
-              <div className="pol-cap">{c.gc[i]}</div>
+              <div className="photo-cap">{c.gc[i]}</div>
             </div>
           ))}
         </div>
@@ -272,6 +318,56 @@ function Gallery({ c }: { c: Copy }) {
       <div className={`drag-hint${dh ? ' v' : ''}`}>
         <div className="dh-line"/>
         <div className="dh-text">drag to explore</div>
+      </div>
+    </section>
+  );
+}
+
+const W = {
+  en: { label: 'Leave a wish', name: 'Your name', msg: 'Your message', send: 'Send wishes', sent: 'Thank you ♡', err: 'Something went wrong — try again.' },
+  id: { label: 'Kirim ucapan', name: 'Nama Anda', msg: 'Pesan Anda', send: 'Kirim ucapan', sent: 'Terima kasih ♡', err: 'Terjadi kesalahan — coba lagi.' },
+} as const;
+
+function Wishes({ lang }: { lang: Lang }) {
+  const w = W[lang];
+  const [r, v] = useRv(0.1);
+  const [state, handleSubmit] = useForm('mrejzzzd');
+
+  return (
+    <section className="wishes">
+      <div className="wishes-inner" ref={r}>
+        <div className={`rv slabel${v ? ' v' : ''}`}>
+          <div className={`slabel-line${v ? ' v' : ''}`} style={{ background: 'rgba(201,169,122,0.28)' }} />
+          <span className="slabel-text" style={{ color: 'rgba(201,169,122,0.45)' }}>{w.label}</span>
+        </div>
+
+        {state.succeeded ? (
+          <div className={`rv d1 wishes-thanks${v ? ' v' : ''}`}>{w.sent}</div>
+        ) : (
+          <form className={`rv d1 wishes-form${v ? ' v' : ''}`} onSubmit={handleSubmit}>
+            <input
+              className="wish-input"
+              type="text"
+              name="name"
+              placeholder={w.name}
+              required
+              maxLength={80}
+            />
+            <ValidationError field="name" errors={state.errors} className="wish-err" />
+            <textarea
+              className="wish-input wish-textarea"
+              name="message"
+              placeholder={w.msg}
+              required
+              maxLength={400}
+              rows={4}
+            />
+            <ValidationError field="message" errors={state.errors} className="wish-err" />
+            <button className="wish-btn" type="submit" disabled={state.submitting}>
+              {state.submitting ? '···' : w.send}
+            </button>
+          </form>
+        )}
       </div>
     </section>
   );
@@ -302,12 +398,13 @@ function Celeb({ c }: { c: Copy }) {
 export default function WeddingApp() {
   const [lang, setLang] = useState<Lang>('en');
   const [started, setStarted] = useState(false);
-  const audioRef = useAudio(started);
+  const { ref: audioRef } = useAudio(started);
   const c = C[lang];
 
   return (
     <>
       <audio ref={audioRef} src="/uploads/One Last Message.m4a" loop preload="auto" style={{ display: 'none' }} />
+      <AudioButton started={started} audioRef={audioRef} />
       <Splash c={c} onStart={() => setStarted(true)} />
       <div className={`lang${started ? ' show' : ''}`}>
         <button className={`lb${lang === 'en' ? ' on' : ''}`} onClick={() => setLang('en')}>EN</button>
@@ -319,6 +416,7 @@ export default function WeddingApp() {
         <Story c={c} />
         <Gallery c={c} />
         <Celeb c={c} />
+        <Wishes lang={lang} />
         <footer className="footer">
           <div className="footer-names">Taslia &amp; Varian · MMXXVI</div>
         </footer>
