@@ -15,121 +15,6 @@
 html { scroll-behavior: smooth; }
 body { background: var(--ink); color: var(--ink); font-family: 'Jost', sans-serif; overflow-x: hidden; }
 
-/* kill tap highlight everywhere */
-* { -webkit-tap-highlight-color: transparent; }
-button, a { touch-action: manipulation; }
-button:focus-visible { outline: 1px solid rgba(201,169,122,0.5); outline-offset: 3px; }
-button:focus:not(:focus-visible) { outline: none; }
-
-/* ─── Envelope ────────────────────────────────── */
-.env-stage {
-  position: fixed; inset: 0; z-index: 200;
-  background: var(--ink);
-  display: flex; flex-direction: column; align-items: center; justify-content: center;
-  cursor: pointer; user-select: none; -webkit-user-select: none;
-  padding: clamp(24px, 6vw, 80px);
-}
-
-.env-hint {
-  position: absolute; bottom: clamp(32px, 6vh, 64px);
-  font-size: 9px; letter-spacing: 0.38em; text-transform: uppercase;
-  color: rgba(201,169,122,0.45);
-  animation: blink 2.8s ease-in-out infinite;
-}
-
-.env-wrap {
-  position: relative;
-  width: clamp(260px, 55vw, 400px);
-  height: clamp(180px, 38vw, 280px);
-  perspective: 900px;
-}
-
-/* card that rises out */
-.env-card {
-  position: absolute;
-  bottom: 0; left: 9%; right: 9%;
-  z-index: 1;
-  background: var(--parch2);
-  box-shadow: 0 12px 48px rgba(0,0,0,0.5);
-}
-.env-card-inner {
-  padding: clamp(20px,4vw,36px) clamp(16px,3vw,28px);
-  display: flex; flex-direction: column; align-items: center; gap: 10px;
-  text-align: center;
-}
-.env-card-label {
-  font-size: clamp(7px,1vw,9px); letter-spacing: 0.36em; text-transform: uppercase;
-  color: rgba(138,102,64,0.6);
-}
-.env-card-names {
-  font-family: 'Cormorant Garamond', serif; font-style: italic; font-weight: 300;
-  font-size: clamp(22px,5vw,38px); color: var(--ink); line-height: 1.1; letter-spacing: -0.01em;
-}
-.env-card-names span {
-  display: inline-block; margin: 0 6px;
-  font-size: 0.5em; color: var(--gold2); vertical-align: middle;
-}
-.env-card-date {
-  font-size: clamp(8px,1vw,11px); letter-spacing: 0.28em; text-transform: uppercase;
-  color: rgba(122,92,58,0.55);
-}
-.env-card-orn { width: clamp(60px,15vw,120px); }
-
-/* envelope body */
-.env-body {
-  position: absolute; inset: 0; z-index: 2;
-  background: #e8dcc8;
-  box-shadow: 0 8px 40px rgba(0,0,0,0.45);
-  overflow: hidden;
-}
-
-/* side flaps (decorative triangles via clip-path) */
-.env-flap-side {
-  position: absolute; top: 0; bottom: 0; width: 51%;
-}
-.env-flap-left {
-  left: 0;
-  background: #ddd0b4;
-  clip-path: polygon(0 0, 100% 50%, 0 100%);
-}
-.env-flap-right {
-  right: 0;
-  background: #d8cbb0;
-  clip-path: polygon(100% 0, 0 50%, 100% 100%);
-}
-
-/* bottom flap */
-.env-flap-bottom {
-  position: absolute; bottom: 0; left: 0; right: 0; height: 52%;
-  background: #e0d3b8;
-  clip-path: polygon(0 100%, 50% 0, 100% 100%);
-}
-
-/* wax seal */
-.env-seal {
-  position: absolute; bottom: 14%; left: 50%; transform: translateX(-50%);
-  width: 46px; height: 46px; border-radius: 50%;
-  background: radial-gradient(ellipse at 38% 35%, #b8864e, #7a4e28);
-  box-shadow: 0 2px 8px rgba(0,0,0,0.35);
-  display: flex; align-items: center; justify-content: center;
-  z-index: 4;
-}
-.env-seal-mono {
-  font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 14px;
-  color: rgba(250,246,240,0.9); letter-spacing: -0.5px;
-}
-.env-seal-mono small { font-size: 8px; color: rgba(250,246,240,0.65); }
-
-/* top flap — hinges open with rotateX */
-.env-flap-top {
-  position: absolute; top: 0; left: 0; right: 0; height: 52%; z-index: 3;
-  background: #ddd0b6;
-  clip-path: polygon(0 0, 50% 100%, 100% 0);
-  transform-origin: top center;
-  transform-style: preserve-3d;
-  backface-visibility: hidden;
-}
-
 /* ─── Splash ──────────────────────────────────── */
 .splash {
   position: fixed; inset: 0; z-index: 200;
@@ -315,7 +200,7 @@ button:focus:not(:focus-visible) { outline: none; }
   overflow-x: auto; overflow-y: hidden;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none; padding: 0 clamp(28px,8vw,140px);
-  cursor: grab; touch-action: pan-x;
+  cursor: grab;
 }
 .strip-wrap::-webkit-scrollbar { display: none; }
 .strip-wrap:active { cursor: grabbing; }
@@ -454,11 +339,9 @@ button:focus:not(:focus-visible) { outline: none; }
 .audio-btn {
   position: fixed; bottom: 24px; left: 24px; z-index: 50;
   display: flex; flex-direction: column; align-items: center; gap: 6px;
-  background: none; border: none; cursor: pointer; padding: 8px;
-  margin: -8px;
+  background: none; border: none; cursor: pointer; padding: 0;
   opacity: 0; pointer-events: none;
   transition: opacity 0.7s ease 2.4s;
-  -webkit-user-select: none; user-select: none;
 }
 .audio-btn.show { opacity: 1; pointer-events: auto; }
 .audio-btn:hover .audio-ring { border-color: rgba(201,169,122,0.55); }
