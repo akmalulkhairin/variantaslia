@@ -18,27 +18,64 @@ body { background: var(--ink); color: var(--ink); font-family: 'Jost', sans-seri
 /* ─── Splash ──────────────────────────────────── */
 .splash {
   position: fixed; inset: 0; z-index: 200;
-  background: var(--ink);
+  background:
+    radial-gradient(ellipse at 50% 46%, rgba(201,169,122,0.08), transparent 58%),
+    var(--ink);
   display: flex; flex-direction: column; align-items: center; justify-content: center;
   cursor: pointer; user-select: none;
   transition: opacity 1.8s cubic-bezier(0.4,0,0.2,1);
+  overflow: hidden;
 }
 .splash.out { opacity: 0; pointer-events: none; }
-
-.splash-ring {
-  position: relative; width: 160px; height: 160px;
-  display: flex; align-items: center; justify-content: center;
-  margin-bottom: 36px;
-  animation: ringPulse 4s ease-in-out infinite;
+.cover-botanical {
+  position: absolute;
+  color: rgba(201,169,122,0.22);
+  pointer-events: none;
 }
-.splash-ring svg { position: absolute; inset: 0; width: 100%; height: 100%; }
-.splash-mono {
-  font-family: 'Cormorant Garamond', serif; font-style: italic; font-weight: 300;
-  font-size: 52px; color: var(--parch2); line-height: 1; text-align: center;
+.cover-botanical svg { width: min(58vw, 420px); height: auto; }
+.cover-botanical-a { left: max(-80px, -8vw); top: -34px; transform: rotate(-9deg); }
+.cover-botanical-b { right: max(-80px, -8vw); bottom: -44px; transform: rotate(10deg); }
+.splash-content {
   position: relative; z-index: 1;
+  display: flex; flex-direction: column; align-items: center;
+  text-align: center;
+  padding: 0 24px;
 }
-.splash-amp { display: block; font-size: 22px; color: var(--gold); margin: 2px 0; }
+.splash-kicker {
+  font-size: 9px; letter-spacing: 0.42em; text-transform: uppercase;
+  color: rgba(201,169,122,0.5);
+  margin-bottom: 18px;
+}
+.splash-names {
+  display: flex; align-items: baseline; justify-content: center; gap: clamp(12px,3vw,28px);
+  font-family: 'Cormorant Garamond', serif; font-style: italic; font-weight: 300;
+  font-size: clamp(48px,12vw,118px);
+  color: rgba(250,246,240,0.92);
+  line-height: 0.95;
+}
+.splash-name-amp {
+  font-size: 0.45em;
+  color: var(--gold);
+  transform: translateY(-0.12em);
+}
+.splash-date {
+  margin-top: 16px;
+  font-size: 11px; letter-spacing: 0.28em; text-transform: uppercase;
+  color: rgba(240,232,214,0.58);
+}
+.splash-open {
+  margin-top: 32px;
+  border: 1px solid rgba(201,169,122,0.38);
+  background: rgba(250,246,240,0.92);
+  color: rgba(42,29,17,0.78);
+  font-family: 'Jost', sans-serif; font-size: 10px; letter-spacing: 0.24em; text-transform: uppercase;
+  padding: 14px 28px;
+  border-radius: 3px;
+  cursor: pointer;
+  box-shadow: 0 16px 50px rgba(0,0,0,0.28);
+}
 .splash-hint {
+  margin-top: 28px;
   font-size: 9px; letter-spacing: 0.38em; text-transform: uppercase;
   color: rgba(201,169,122,0.55); animation: blink 2.8s ease-in-out infinite;
 }
@@ -175,6 +212,65 @@ body { background: var(--ink); color: var(--ink); font-family: 'Jost', sans-seri
 }
 .ornament svg { width: clamp(200px,55vw,420px); }
 
+/* ─── Intro ───────────────────────────────────── */
+.intro {
+  min-height: 86svh;
+  background:
+    radial-gradient(ellipse at 50% 46%, rgba(201,169,122,0.08), transparent 62%),
+    var(--ink);
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(80px,12vh,150px) clamp(28px,8vw,140px);
+}
+.intro-botanical {
+  position: absolute; inset: 8% -10%;
+  opacity: 0.24;
+  background:
+    radial-gradient(ellipse at 18% 24%, transparent 0 18%, rgba(201,169,122,0.18) 18.2%, transparent 18.6%),
+    repeating-linear-gradient(132deg, transparent 0 18px, rgba(201,169,122,0.08) 19px, transparent 20px);
+  mask-image: radial-gradient(ellipse at center, black 0 46%, transparent 72%);
+  pointer-events: none;
+}
+.intro-inner {
+  max-width: 680px;
+  text-align: center;
+  position: relative;
+  z-index: 1;
+}
+.intro-mono {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-weight: 300;
+  font-size: clamp(96px,20vw,220px);
+  line-height: 0.82;
+  color: rgba(250,246,240,0.9);
+  letter-spacing: -0.07em;
+}
+.intro-mono span {
+  font-size: 0.28em;
+  color: var(--gold);
+  vertical-align: middle;
+  margin: 0 0.05em;
+}
+.intro-tag {
+  margin-top: 34px;
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  color: rgba(201,169,122,0.64);
+}
+.intro-verse {
+  margin: 24px auto 0;
+  max-width: 560px;
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: clamp(20px,2.6vw,34px);
+  line-height: 1.34;
+  color: rgba(240,232,214,0.72);
+}
+
 /* ─── Story ───────────────────────────────────── */
 .story { background: var(--parch); padding: 0 clamp(28px,8vw,140px) clamp(80px,14vh,160px); }
 .story-inner { max-width: clamp(560px,55vw,780px); }
@@ -276,6 +372,61 @@ body { background: var(--ink); color: var(--ink); font-family: 'Jost', sans-seri
   color: rgba(240,232,214,0.48);
 }
 .celeb-note { font-size: clamp(10px,0.75vw,13px); letter-spacing: 0.2em; text-transform: uppercase; color: rgba(201,169,122,0.24); margin-top: 16px; }
+.save-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+  margin-top: 34px;
+  max-width: 360px;
+}
+.save-help {
+  margin: 0 0 4px;
+  font-size: 13px;
+  line-height: 1.65;
+  color: rgba(240,232,214,0.42);
+}
+.save-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: min(100%, 320px);
+  min-height: 50px;
+  padding: 0 24px;
+  border: 1px solid rgba(201,169,122,0.38);
+  border-radius: 4px;
+  color: rgba(10,8,6,0.86);
+  background: rgba(201,169,122,0.82);
+  text-decoration: none;
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  transition: transform 0.25s ease, background 0.25s ease, border-color 0.25s ease;
+}
+.save-link.ghost {
+  color: rgba(201,169,122,0.72);
+  background: transparent;
+  min-height: 42px;
+  font-size: 9px;
+}
+.save-link:hover {
+  transform: translateY(-2px);
+  background: rgba(240,232,214,0.92);
+  border-color: rgba(240,232,214,0.72);
+}
+.save-link.ghost:hover {
+  color: rgba(10,8,6,0.86);
+}
+
+@media (max-width: 640px) {
+  .save-actions {
+    align-items: stretch;
+    max-width: none;
+  }
+  .save-link {
+    width: 100%;
+  }
+}
 
 /* ─── Wishes ──────────────────────────────────── */
 .wishes {

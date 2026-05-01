@@ -1,0 +1,15 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Taslia Varian Wedding//Invitation//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+BEGIN:VEVENT
+UID:taslia-varian-wedding-20260604@wedding-invitation
+DTSTAMP:20260501T000000Z
+DTSTART;VALUE=DATE:20260604
+DTEND;VALUE=DATE:20260605
+SUMMARY:Taslia & Varian Wedding
+DESCRIPTION:Wedding celebration of Taslia Khaira and Varian Furqan.
+LOCATION:Aceh, Indonesia
+END:VEVENT
+END:VCALENDAR

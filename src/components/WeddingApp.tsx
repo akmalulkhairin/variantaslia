@@ -16,6 +16,12 @@ const C = {
     cm: 'June',
     cl: 'Aceh · Indonesia',
     cn: 'Full details to follow',
+    open: 'Open invitation',
+    introTag: '#TasliaAndVarian',
+    introVerse: '"Far from home, two paths met in a city of rain and old streets. What began as a quiet crossing became a promise to return home together."',
+    calHelp: 'Add this date to your phone calendar.',
+    calPrimary: 'Save the date',
+    calFallback: 'Having trouble? Add with Google Calendar',
   },
   id: {
     tap: 'sentuh untuk membuka',
@@ -31,6 +37,12 @@ const C = {
     cm: 'Juni',
     cl: 'Aceh · Indonesia',
     cn: 'Undangan resmi segera menyusul',
+    open: 'Buka undangan',
+    introTag: '#TasliaDanVarian',
+    introVerse: '"Jauh dari rumah, dua jalan bertemu di kota hujan dan jalan-jalan tua. Dari pertemuan sederhana, tumbuh janji untuk pulang bersama."',
+    calHelp: 'Tambahkan tanggal ini ke kalender HP Anda.',
+    calPrimary: 'Simpan tanggal',
+    calFallback: 'Jika gagal, buka lewat Google Calendar',
   },
 } as const;
 
@@ -144,26 +156,51 @@ function Splash({ c, onStart }: { c: Copy; onStart: () => void }) {
   if (gone) return null;
   return (
     <div className={`splash${out ? ' out' : ''}`} onClick={go}>
-      <div className="splash-ring">
-        <svg viewBox="0 0 160 160" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <circle cx="80" cy="80" r="74" stroke="rgba(201,169,122,0.18)" strokeWidth="1"/>
-          <circle cx="80" cy="80" r="66" stroke="rgba(201,169,122,0.1)" strokeWidth="1" strokeDasharray="4 6"/>
-          {[0, 90, 180, 270].map(a => (
-            <g key={a} transform={`rotate(${a},80,80)`}>
-              <line x1="80" y1="6" x2="80" y2="14" stroke="rgba(201,169,122,0.4)" strokeWidth="1"/>
-              <circle cx="80" cy="16" r="1.5" fill="rgba(201,169,122,0.3)"/>
-            </g>
-          ))}
-          {[45, 135, 225, 315].map(a => (
-            <g key={a} transform={`rotate(${a},80,80)`}>
-              <line x1="80" y1="8" x2="80" y2="13" stroke="rgba(201,169,122,0.2)" strokeWidth="0.8"/>
-            </g>
-          ))}
+      <div className="cover-botanical cover-botanical-a" aria-hidden="true">
+        <svg viewBox="0 0 260 520" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M94 505C82 427 94 354 126 287C154 229 167 177 144 116C129 78 106 43 75 10" stroke="currentColor" strokeWidth="1.1"/>
+          <path d="M122 165C88 126 48 104 8 96C38 138 77 160 122 165Z" stroke="currentColor" strokeWidth="1"/>
+          <path d="M139 214C92 195 50 198 13 223C60 240 102 237 139 214Z" stroke="currentColor" strokeWidth="1"/>
+          <path d="M109 314C69 326 36 351 10 389C60 385 93 359 109 314Z" stroke="currentColor" strokeWidth="1"/>
+          <path d="M154 118C181 82 212 61 249 54C231 100 199 122 154 118Z" stroke="currentColor" strokeWidth="1"/>
+          <path d="M157 274C198 253 230 252 254 270C222 296 190 298 157 274Z" stroke="currentColor" strokeWidth="1"/>
         </svg>
-        <div className="splash-mono">T<span className="splash-amp">&amp;</span>V</div>
       </div>
-      <div className="splash-hint">{c.tap}</div>
+      <div className="cover-botanical cover-botanical-b" aria-hidden="true">
+        <svg viewBox="0 0 260 520" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M168 6C179 82 165 152 132 216C102 274 90 331 114 401C127 440 150 475 184 512" stroke="currentColor" strokeWidth="1.1"/>
+          <path d="M132 96C91 77 56 79 25 102C61 125 97 123 132 96Z" stroke="currentColor" strokeWidth="1"/>
+          <path d="M120 188C82 214 55 248 38 291C82 280 110 246 120 188Z" stroke="currentColor" strokeWidth="1"/>
+          <path d="M128 339C172 322 213 327 250 354C205 368 164 363 128 339Z" stroke="currentColor" strokeWidth="1"/>
+          <path d="M102 421C68 431 40 455 18 493C62 488 91 464 102 421Z" stroke="currentColor" strokeWidth="1"/>
+        </svg>
+      </div>
+      <div className="splash-content">
+        <div className="splash-kicker">Wedding Invitation</div>
+        <div className="splash-names">
+          <span>Taslia</span>
+          <span className="splash-name-amp">&amp;</span>
+          <span>Varian</span>
+        </div>
+        <div className="splash-date">{c.date}</div>
+        <button className="splash-open" type="button" onClick={go}>{c.open}</button>
+        <div className="splash-hint">{c.tap}</div>
+      </div>
     </div>
+  );
+}
+
+function Intro({ c }: { c: Copy }) {
+  const [r, v] = useRv(0.12);
+  return (
+    <section className="intro" ref={r}>
+      <div className="intro-botanical" aria-hidden="true" />
+      <div className={`intro-inner rv${v ? ' v' : ''}`}>
+        <div className="intro-mono">T<span>&amp;</span>V</div>
+        <div className="intro-tag">{c.introTag}</div>
+        <p className="intro-verse">{c.introVerse}</p>
+      </div>
+    </section>
   );
 }
 
@@ -375,6 +412,7 @@ function Wishes({ lang }: { lang: Lang }) {
 
 function Celeb({ c }: { c: Copy }) {
   const [r, v] = useRv(0.12);
+  const googleUrl = 'https://calendar.google.com/calendar/render?action=TEMPLATE&text=Taslia%20%26%20Varian%20Wedding&dates=20260604/20260605&details=Wedding%20celebration%20of%20Taslia%20Khaira%20and%20Varian%20Furqan&location=Aceh%2C%20Indonesia';
   return (
     <section className="celeb">
       <div className="celeb-inner" ref={r}>
@@ -390,6 +428,11 @@ function Celeb({ c }: { c: Copy }) {
         <div className={`rv d2 celeb-stem${v ? ' v' : ''}`}/>
         <div className={`rv d3 celeb-loc${v ? ' v' : ''}`}>{c.cl}</div>
         <div className={`rv d3 celeb-note${v ? ' v' : ''}`}>{c.cn}</div>
+        <div className={`rv d3 save-actions${v ? ' v' : ''}`}>
+          <p className="save-help">{c.calHelp}</p>
+          <a className="save-link" href="/taslia-varian-wedding.ics" download>{c.calPrimary}</a>
+          <a className="save-link ghost" href={googleUrl} target="_blank" rel="noreferrer">{c.calFallback}</a>
+        </div>
       </div>
     </section>
   );
@@ -412,6 +455,7 @@ export default function WeddingApp() {
       </div>
       <main>
         <Hero c={c} on={started} />
+        <Intro c={c} />
         <Ornament />
         <Story c={c} />
         <Gallery c={c} />
