@@ -1,0 +1,108 @@
+---
+import AtlasInvitation from '../components/AtlasInvitation';
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Taslia &amp; Varian — 04 June 2026</title>
+    <meta name="description" content="You are invited to celebrate the wedding of Taslia Khaira and Varian Furqan · 04 June 2026 · Aceh, Indonesia" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400;1,500&family=Cormorant+SC:wght@300;400&family=Jost:wght@300;400&display=swap" rel="stylesheet" />
+    <style is:global>
+      /* ── Atlas Invitation — "The Route" ───────── */
+      :root { --a-bg:#0c0b09; --a-bg2:#101412; --a-gold:#c4a24e; --a-gold-lo:rgba(196,162,78,0.2); --a-cream:#ede0c4; --a-muted:rgba(237,224,196,0.44); --a-sage:#3d5442; --a-border:rgba(196,162,78,0.14); }
+
+      .atl-page { min-height:100svh; background:var(--a-bg); color:var(--a-cream); font-family:'Cormorant Garamond',serif; overflow-x:hidden; position:relative; }
+      .atl-page::before { content:''; position:fixed; inset:0; pointer-events:none; z-index:0; opacity:.2;
+        background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.68' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.18'/%3E%3C/svg%3E"); }
+
+      /* ── Language ──────────────────────────────── */
+      .atl-lang { position:fixed; z-index:40; right:20px; top:20px; display:flex; border:1px solid var(--a-border); border-radius:999px; overflow:hidden; backdrop-filter:blur(24px); background:rgba(12,11,9,.64); }
+      .atl-lang button { border:0; background:transparent; color:var(--a-muted); font-family:'Jost',sans-serif; font-size:9px; letter-spacing:.22em; padding:9px 14px; cursor:pointer; transition:color .2s,background .2s; }
+      .atl-lang button.on { background:var(--a-gold); color:var(--a-bg); }
+
+      /* ── Cover ─────────────────────────────────── */
+      .atl-cover { position:relative; z-index:1; min-height:100svh; display:flex; flex-direction:column; justify-content:center; align-items:center; padding:clamp(60px,12vh,110px) 24px clamp(48px,8vh,80px); text-align:center; overflow:hidden; }
+      .atl-cover-corner { position:absolute; top:22px; left:22px; opacity:.32; width:76px; height:76px; }
+      .atl-kicker { font-family:'Jost',sans-serif; font-size:9px; letter-spacing:.38em; text-transform:uppercase; color:var(--a-gold); margin-bottom:clamp(28px,5vh,52px); }
+      .atl-names { position:relative; line-height:.84; }
+      .atl-name { font-family:'Cormorant Garamond',serif; font-style:italic; font-weight:300; font-size:clamp(72px,22vw,160px); letter-spacing:-.04em; color:var(--a-cream); display:block; white-space:nowrap; }
+      .atl-amp-line { display:flex; align-items:center; justify-content:center; gap:16px; margin:clamp(10px,2.5vh,22px) 0; }
+      .atl-amp-rule { flex:1; max-width:80px; height:1px; background:var(--a-gold-lo); }
+      .atl-amp { font-family:'Cormorant Garamond',serif; font-style:italic; font-size:clamp(18px,4vw,26px); color:var(--a-gold); }
+      .atl-char { display:inline-block; }
+      .atl-meta { margin-top:clamp(28px,5vh,52px); display:flex; flex-direction:column; gap:10px; }
+      .atl-date-str { font-family:'Jost',sans-serif; font-size:10px; letter-spacing:.34em; text-transform:uppercase; color:var(--a-cream); }
+      .atl-loc { font-family:'Jost',sans-serif; font-size:9px; letter-spacing:.24em; text-transform:uppercase; color:var(--a-muted); }
+      .atl-cta { margin-top:clamp(36px,6vh,56px); display:inline-flex; align-items:center; gap:12px; border:1px solid var(--a-border); border-radius:999px; padding:15px 32px; background:rgba(196,162,78,.06); color:var(--a-gold); font-family:'Jost',sans-serif; font-size:9px; letter-spacing:.3em; text-transform:uppercase; cursor:pointer; transition:background .3s,border-color .3s; }
+      .atl-cta:hover { background:rgba(196,162,78,.12); border-color:rgba(196,162,78,.4); }
+      .atl-cta svg { transition:transform .3s; }
+      .atl-cta:hover svg { transform:translateY(3px); }
+
+      /* ── Divider ───────────────────────────────── */
+      .atl-divider { width:100%; height:1px; background:linear-gradient(90deg,transparent,var(--a-border) 20%,var(--a-border) 80%,transparent); position:relative; z-index:1; }
+
+      /* ── Map Section ───────────────────────────── */
+      .atl-map-section { position:relative; z-index:1; padding:clamp(72px,12vh,120px) 0 clamp(60px,10vh,100px); overflow:hidden; background:radial-gradient(ellipse at 80% 50%,rgba(61,84,66,.12),transparent 50%),var(--a-bg2); }
+      .atl-map-head { padding:0 clamp(24px,6vw,72px) clamp(36px,5vh,60px); display:flex; flex-direction:column; gap:12px; }
+      .atl-map-eyebrow { font-family:'Jost',sans-serif; font-size:9px; letter-spacing:.38em; text-transform:uppercase; color:var(--a-gold); }
+      .atl-map-title { font-style:italic; font-weight:300; font-size:clamp(32px,7vw,58px); line-height:1.08; color:var(--a-cream); max-width:560px; }
+      .atl-map-wrap { position:relative; width:100%; }
+      .atl-map-svg { width:100%; height:auto; display:block; }
+      /* Map SVG elements */
+      .atl-graticule { stroke:rgba(196,162,78,.07); stroke-width:.6; fill:none; }
+      .atl-land { fill:rgba(61,84,66,.28); stroke:rgba(196,162,78,.14); stroke-width:.7; }
+      .atl-route { fill:none; stroke:var(--a-gold); stroke-width:1.4; stroke-linecap:round; }
+      .atl-city-dot { fill:var(--a-gold); }
+      .atl-city-ring { fill:none; stroke:var(--a-gold); stroke-width:.9; opacity:.4; }
+      .atl-city-name { font-family:'Jost',sans-serif; font-size:9px; letter-spacing:.2em; text-transform:uppercase; fill:var(--a-cream); }
+      .atl-city-coord { font-family:'Jost',sans-serif; font-size:7px; letter-spacing:.12em; fill:var(--a-muted); }
+      .atl-map-caption { padding:clamp(28px,4vh,44px) clamp(24px,6vw,72px) 0; display:flex; gap:48px; flex-wrap:wrap; }
+      .atl-map-caption p { font-style:italic; font-size:clamp(15px,3.5vw,19px); color:var(--a-muted); line-height:1.6; max-width:500px; }
+
+      /* ── Story ─────────────────────────────────── */
+      .atl-story { position:relative; z-index:1; padding:clamp(80px,14vh,140px) clamp(24px,8vw,112px); background:var(--a-bg); border-top:1px solid var(--a-border); }
+      .atl-story-label { font-family:'Jost',sans-serif; font-size:9px; letter-spacing:.36em; text-transform:uppercase; color:var(--a-gold); margin-bottom:clamp(22px,4vh,40px); }
+      .atl-story-quote { font-style:italic; font-weight:300; font-size:clamp(28px,6vw,52px); line-height:1.16; color:var(--a-cream); max-width:840px; }
+      .atl-story-body { margin-top:clamp(28px,5vh,52px); font-size:clamp(15px,3vw,18px); font-style:italic; line-height:2; color:var(--a-muted); max-width:600px; }
+
+      /* ── Date Block ────────────────────────────── */
+      .atl-date-block { position:relative; z-index:1; padding:clamp(80px,14vh,140px) 0; background:radial-gradient(ellipse at 20% 50%,rgba(196,162,78,.07),transparent 44%),var(--a-bg2); border-top:1px solid var(--a-border); overflow:hidden; }
+      .atl-date-inner { padding:0 clamp(24px,6vw,72px); display:flex; align-items:baseline; gap:clamp(16px,4vw,52px); flex-wrap:wrap; }
+      .atl-date-num { font-family:'Cormorant Garamond',serif; font-style:italic; font-weight:300; font-size:clamp(140px,40vw,280px); line-height:.78; color:var(--a-gold); letter-spacing:-.05em; flex-shrink:0; }
+      .atl-date-right { display:flex; flex-direction:column; gap:14px; }
+      .atl-date-month { font-style:italic; font-weight:300; font-size:clamp(28px,6vw,52px); line-height:1.1; color:var(--a-cream); }
+      .atl-date-place { font-family:'Jost',sans-serif; font-size:9px; letter-spacing:.26em; text-transform:uppercase; color:var(--a-muted); }
+      .atl-date-save { font-family:'Jost',sans-serif; font-size:9px; letter-spacing:.22em; text-transform:uppercase; color:var(--a-gold); }
+      .atl-date-actions { margin-top:clamp(32px,5vh,52px); padding:0 clamp(24px,6vw,72px); display:flex; gap:14px; flex-wrap:wrap; }
+      .atl-btn { min-height:50px; padding:0 28px; border-radius:999px; text-decoration:none; font-family:'Jost',sans-serif; font-size:9px; letter-spacing:.2em; text-transform:uppercase; display:inline-flex; align-items:center; transition:opacity .2s; }
+      .atl-btn-solid { background:var(--a-gold); color:var(--a-bg); border:none; }
+      .atl-btn-ghost { background:transparent; border:1px solid var(--a-border); color:var(--a-gold); }
+      .atl-btn:hover { opacity:.76; }
+
+      /* ── Gallery ───────────────────────────────── */
+      .atl-gallery { position:relative; z-index:1; padding:clamp(72px,12vh,120px) 0; background:var(--a-bg); border-top:1px solid var(--a-border); }
+      .atl-gallery-label { font-family:'Jost',sans-serif; font-size:9px; letter-spacing:.36em; text-transform:uppercase; color:var(--a-gold); padding:0 clamp(24px,6vw,72px) clamp(32px,5vh,52px); display:block; }
+      .atl-photo-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:16px; padding:0 clamp(16px,4vw,52px); max-width:900px; margin:0 auto; }
+      @media(min-width:640px) { .atl-photo-grid { grid-template-columns:repeat(4,1fr); gap:20px; } }
+      .atl-photo { position:relative; overflow:hidden; aspect-ratio:2/3; border:1px solid var(--a-border); }
+      .atl-photo::after { content:''; position:absolute; inset:0; background:linear-gradient(to bottom,transparent 60%,rgba(12,11,9,.6)); pointer-events:none; }
+      .atl-photo img { width:100%; height:100%; object-fit:cover; filter:sepia(.24) saturate(.8) contrast(1.06) brightness(.84); transition:transform .6s ease; }
+      .atl-photo:hover img { transform:scale(1.04); }
+
+      /* ── Closing ───────────────────────────────── */
+      .atl-closing { position:relative; z-index:1; padding:clamp(96px,16vh,160px) clamp(24px,8vw,112px); background:var(--a-bg); border-top:1px solid var(--a-border); text-align:center; }
+      .atl-closing-text { font-style:italic; font-weight:300; font-size:clamp(32px,7vw,64px); color:var(--a-muted); line-height:1.2; }
+      .atl-closing-names { display:block; font-size:clamp(48px,12vw,96px); color:var(--a-cream); margin-top:12px; letter-spacing:-.03em; }
+      .atl-closing-sub { margin-top:28px; font-family:'Jost',sans-serif; font-size:9px; letter-spacing:.3em; text-transform:uppercase; color:var(--a-gold); }
+    </style>
+  </head>
+  <body style="background:#0c0b09;margin:0">
+    <AtlasInvitation client:load />
+  </body>
+</html>
