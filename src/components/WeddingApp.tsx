@@ -48,6 +48,8 @@ const C = {
 
 type Lang = keyof typeof C;
 type Copy = (typeof C)[Lang];
+type Variant = 'default' | 'compass' | 'seal' | 'floral' | 'minimal' | 'watercolor';
+type DisplayNames = { bride: string; groom: string };
 
 function useRv(threshold = 0.14) {
   const ref = useRef<HTMLDivElement>(null);
@@ -145,44 +147,99 @@ function Ornament() {
   );
 }
 
-function Splash({ c, onStart }: { c: Copy; onStart: () => void }) {
+function Splash({ c, onStart, variant, names }: { c: Copy; onStart: () => void; variant: Variant; names: DisplayNames }) {
   const [out, setOut] = useState(false);
   const [gone, setGone] = useState(false);
+
+  useEffect(() => {
+    const previousBody = document.body.style.overflow;
+    const previousHtml = document.documentElement.style.overflow;
+    document.body.style.overflow = 'hidden';
+    document.documentElement.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = previousBody;
+      document.documentElement.style.overflow = previousHtml;
+    };
+  }, []);
+
   const go = () => {
     if (out) return;
     setOut(true); onStart();
-    setTimeout(() => setGone(true), 1900);
+    setTimeout(() => {
+      document.body.style.overflow = '';
+      document.documentElement.style.overflow = '';
+      setGone(true);
+    }, 1900);
   };
   if (gone) return null;
   return (
-    <div className={`splash${out ? ' out' : ''}`} onClick={go}>
-      <div className="cover-botanical cover-botanical-a" aria-hidden="true">
-        <svg viewBox="0 0 260 520" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M94 505C82 427 94 354 126 287C154 229 167 177 144 116C129 78 106 43 75 10" stroke="currentColor" strokeWidth="1.1"/>
-          <path d="M122 165C88 126 48 104 8 96C38 138 77 160 122 165Z" stroke="currentColor" strokeWidth="1"/>
-          <path d="M139 214C92 195 50 198 13 223C60 240 102 237 139 214Z" stroke="currentColor" strokeWidth="1"/>
-          <path d="M109 314C69 326 36 351 10 389C60 385 93 359 109 314Z" stroke="currentColor" strokeWidth="1"/>
-          <path d="M154 118C181 82 212 61 249 54C231 100 199 122 154 118Z" stroke="currentColor" strokeWidth="1"/>
-          <path d="M157 274C198 253 230 252 254 270C222 296 190 298 157 274Z" stroke="currentColor" strokeWidth="1"/>
-        </svg>
-      </div>
-      <div className="cover-botanical cover-botanical-b" aria-hidden="true">
-        <svg viewBox="0 0 260 520" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M168 6C179 82 165 152 132 216C102 274 90 331 114 401C127 440 150 475 184 512" stroke="currentColor" strokeWidth="1.1"/>
-          <path d="M132 96C91 77 56 79 25 102C61 125 97 123 132 96Z" stroke="currentColor" strokeWidth="1"/>
-          <path d="M120 188C82 214 55 248 38 291C82 280 110 246 120 188Z" stroke="currentColor" strokeWidth="1"/>
-          <path d="M128 339C172 322 213 327 250 354C205 368 164 363 128 339Z" stroke="currentColor" strokeWidth="1"/>
-          <path d="M102 421C68 431 40 455 18 493C62 488 91 464 102 421Z" stroke="currentColor" strokeWidth="1"/>
-        </svg>
-      </div>
+    <div className={`splash splash-${variant}${out ? ' out' : ''}`} onClick={go}>
+      {variant === 'watercolor' && (
+        <div className="watercolor-stage-art" aria-hidden="true">
+          <svg viewBox="0 0 390 844" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <radialGradient id="roseWash" cx="50%" cy="45%" r="58%">
+                <stop offset="0%" stopColor="#ead1df" stopOpacity="0.96" />
+                <stop offset="58%" stopColor="#c887a1" stopOpacity="0.52" />
+                <stop offset="100%" stopColor="#8f5d79" stopOpacity="0.08" />
+              </radialGradient>
+              <radialGradient id="paperBloom" cx="44%" cy="42%" r="62%">
+                <stop offset="0%" stopColor="#fffdf9" stopOpacity="0.95" />
+                <stop offset="100%" stopColor="#d7dce8" stopOpacity="0.2" />
+              </radialGradient>
+            </defs>
+            <g className="wash-flower wash-flower-top">
+              <path d="M44 48C82 8 145 11 171 58C202 115 148 161 93 143C43 127 15 83 44 48Z" fill="url(#roseWash)" />
+              <path d="M70 63C93 35 132 38 148 67C166 102 133 128 101 117C70 107 51 86 70 63Z" fill="#f7e1ec" fillOpacity="0.42" />
+              <path className="ink-line" d="M52 57C79 26 132 21 160 59C190 99 162 139 122 146C78 154 35 113 44 75" />
+            </g>
+            <g className="wash-flower wash-flower-bottom">
+              <path d="M234 648C284 601 353 616 371 678C391 745 317 792 257 756C207 726 194 687 234 648Z" fill="url(#roseWash)" />
+              <path d="M266 674C295 646 334 656 345 690C357 726 316 752 283 732C256 716 245 695 266 674Z" fill="#f5d7e5" fillOpacity="0.46" />
+              <path className="ink-line" d="M236 660C272 615 341 615 367 669C392 722 344 768 293 766C239 764 202 713 228 672" />
+            </g>
+            <g className="paper-flower paper-flower-left">
+              <path d="M-18 315C10 252 84 250 116 307C148 363 105 425 44 414C-11 404 -42 368 -18 315Z" fill="url(#paperBloom)" />
+              <circle cx="50" cy="340" r="18" fill="#6d7488" fillOpacity="0.18" />
+              <path className="ink-line" d="M4 306C31 259 84 262 108 306C133 350 103 397 56 407C9 416 -23 360 2 314" />
+            </g>
+            <g className="leaf-spray leaf-spray-right">
+              <path className="ink-line sage" d="M346 154C302 230 286 312 300 400" />
+              {[0, 1, 2, 3, 4].map(i => (
+                <ellipse key={i} cx={318 + i * 4} cy={218 + i * 34} rx="10" ry="26" fill="#788b66" fillOpacity="0.28" transform={`rotate(${i % 2 ? -34 : 31} ${318 + i * 4} ${218 + i * 34})`} />
+              ))}
+            </g>
+          </svg>
+        </div>
+      )}
       <div className="splash-content">
         <div className="splash-kicker">Wedding Invitation</div>
+        {variant === 'floral' && (
+          <>
+            <div className="splash-floral splash-floral-a" aria-hidden="true" />
+            <div className="splash-floral splash-floral-b" aria-hidden="true" />
+          </>
+        )}
+        <div className="splash-timepiece" aria-hidden="true">
+          <svg viewBox="0 0 220 220" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="110" cy="110" r="94" stroke="rgba(201,169,122,0.28)" strokeWidth="1"/>
+            <circle cx="110" cy="110" r="82" stroke="rgba(201,169,122,0.12)" strokeWidth="1" strokeDasharray="3 7"/>
+            <circle cx="110" cy="110" r="58" stroke="rgba(201,169,122,0.1)" strokeWidth="1"/>
+            {[0, 30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330].map(a => (
+              <g key={a} transform={`rotate(${a},110,110)`}>
+                <line x1="110" y1="16" x2="110" y2={a % 90 === 0 ? 29 : 24} stroke="rgba(201,169,122,0.42)" strokeWidth={a % 90 === 0 ? 1.1 : 0.7}/>
+              </g>
+            ))}
+            <path d="M110 51V110L145 132" stroke="rgba(201,169,122,0.26)" strokeWidth="1" strokeLinecap="round"/>
+          </svg>
+          <div className="splash-mono">T<span>&amp;</span>V</div>
+        </div>
         <div className="splash-names">
-          <span>Taslia</span>
-          <span className="splash-name-amp">&amp;</span>
-          <span>Varian</span>
+          <span>{names.bride}</span>
+          <span>{names.groom}</span>
         </div>
         <div className="splash-date">{c.date}</div>
+        <div className="splash-route">{c.city1} · {c.citymid} · {c.city2}</div>
         <button className="splash-open" type="button" onClick={go}>{c.open}</button>
         <div className="splash-hint">{c.tap}</div>
       </div>
@@ -204,7 +261,7 @@ function Intro({ c }: { c: Copy }) {
   );
 }
 
-function Hero({ c, on }: { c: Copy; on: boolean }) {
+function Hero({ c, on, names }: { c: Copy; on: boolean; names: DisplayNames }) {
   const [sy, setSy] = useState(0);
   useEffect(() => {
     const h = () => setSy(window.scrollY);
@@ -234,9 +291,9 @@ function Hero({ c, on }: { c: Copy; on: boolean }) {
       </div>
 
       <div className="hero-names">
-        <div className="hero-name"><span className="clip"><span className={`ci${on ? ' v' : ''}`}>Taslia Khaira</span></span></div>
+        <div className="hero-name"><span className="clip"><span className={`ci${on ? ' v' : ''}`}>{names.bride}</span></span></div>
         <div className="hero-amp"><span className={`hero-amp-i${on ? ' v' : ''}`}>— &amp; —</span></div>
-        <div className="hero-name"><span className="clip"><span className={`ci${on ? ' v' : ''}`}>Varian Furqan</span></span></div>
+        <div className="hero-name"><span className="clip"><span className={`ci${on ? ' v' : ''}`}>{names.groom}</span></span></div>
 
         <div className={`journey${on ? ' v' : ''}`}>
           <span className="j-c">{c.city1}</span>
@@ -438,23 +495,26 @@ function Celeb({ c }: { c: Copy }) {
   );
 }
 
-export default function WeddingApp() {
+export default function WeddingApp({ variant = 'default' }: { variant?: Variant }) {
   const [lang, setLang] = useState<Lang>('en');
   const [started, setStarted] = useState(false);
   const { ref: audioRef } = useAudio(started);
   const c = C[lang];
+  const names = variant === 'default'
+    ? { bride: 'Taslia Khaira', groom: 'Varian Furqan' }
+    : { bride: 'Taslia', groom: 'Varian' };
 
   return (
-    <>
+    <div className={`site site-${variant}`}>
       <audio ref={audioRef} src="/uploads/One Last Message.m4a" loop preload="auto" style={{ display: 'none' }} />
       <AudioButton started={started} audioRef={audioRef} />
-      <Splash c={c} onStart={() => setStarted(true)} />
+      <Splash c={c} onStart={() => setStarted(true)} variant={variant} names={names} />
       <div className={`lang${started ? ' show' : ''}`}>
         <button className={`lb${lang === 'en' ? ' on' : ''}`} onClick={() => setLang('en')}>EN</button>
         <button className={`lb${lang === 'id' ? ' on' : ''}`} onClick={() => setLang('id')}>ID</button>
       </div>
       <main>
-        <Hero c={c} on={started} />
+        <Hero c={c} on={started} names={names} />
         <Intro c={c} />
         <Ornament />
         <Story c={c} />
@@ -465,6 +525,6 @@ export default function WeddingApp() {
           <div className="footer-names">Taslia &amp; Varian · MMXXVI</div>
         </footer>
       </main>
-    </>
+    </div>
   );
 }
