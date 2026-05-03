@@ -1,0 +1,314 @@
+import { type MouseEvent, useEffect, useRef, useState } from 'react';
+import { useForm, ValidationError } from '@formspree/react';
+
+// ── Copy ────────────────────────────────────────────────────────────────────
+
+const C = {
+  en: {
+    tap: 'tap the compass to open',
+    kicker: 'Wedding Invitation',
+    date: '04 · June · 2026',
+    open: 'Open Invitation',
+    sl: 'Our Story',
+    st: 'Far from home,\nclose to each other',
+    sb: [
+      'Taslia is from Aceh. Varian is from Bukittinggi, in the highlands of West Sumatra.',
+      'They were far from home when they found each other at Leibniz Universität in Hannover, Germany.',
+      'Two Sumatran souls in a foreign city, finding comfort in familiar roots — and building a promise to return home together.',
+    ],
+    together: 'Together with their families',
+    celebrate: 'invite you to celebrate their wedding',
+    save: 'Save the Date',
+    location: 'Aceh · Indonesia',
+    details: 'Venue details to follow',
+    dlCal: 'Download calendar',
+    gCal: 'Google Calendar',
+    wl: 'Well Wishes',
+    wt: 'Leave a note for the couple',
+    name: 'Your name',
+    msg: 'Your message',
+    send: 'Send wishes',
+    sent: 'Thank you for the wish ♡',
+    music: 'music',
+  },
+  id: {
+    tap: 'sentuh kompas untuk membuka',
+    kicker: 'Undangan Pernikahan',
+    date: '04 · Juni · 2026',
+    open: 'Buka Undangan',
+    sl: 'Cerita Kami',
+    st: 'Jauh dari tanah air,\nnamun hati saling menemukan',
+    sb: [
+      'Taslia dari Aceh. Varian dari Bukittinggi, di dataran tinggi Sumatera Barat.',
+      'Mereka jauh dari rumah ketika takdir mempertemukan keduanya di Leibniz Universität, Hannover, Jerman.',
+      'Dua jiwa Sumatra di kota asing, menemukan ketenangan dalam akar yang sama — dan membangun janji untuk pulang bersama.',
+    ],
+    together: 'Bersama keluarga mereka',
+    celebrate: 'mengundang Anda merayakan pernikahan mereka',
+    save: 'Tandai Tanggalnya',
+    location: 'Aceh · Indonesia',
+    details: 'Detail tempat segera menyusul',
+    dlCal: 'Unduh kalender',
+    gCal: 'Google Calendar',
+    wl: 'Ucapan',
+    wt: 'Tinggalkan pesan untuk pasangan',
+    name: 'Nama Anda',
+    msg: 'Pesan Anda',
+    send: 'Kirim ucapan',
+    sent: 'Terima kasih ♡',
+    music: 'musik',
+  },
+} as const;
+
+type Lang = keyof typeof C;
+
+// ── Hooks ───────────────────────────────────────────────────────────────────
+
+function useReveal(threshold = 0.16) {
+  const ref = useRef<HTMLElement>(null);
+  const [visible, setVisible] = useState(false);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const obs = new IntersectionObserver(([e]) => {
+      if (e.isIntersecting) { setVisible(true); obs.disconnect(); }
+    }, { threshold });
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, [threshold]);
+  return [ref, visible] as const;
+}
+
+function useAudio(started: boolean) {
+  const ref = useRef<HTMLAudioElement>(null);
+  const rampRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  useEffect(() => {
+    if (!started) return;
+    const a = ref.current;
+    if (!a) return;
+    a.volume = 0; a.loop = true;
+    a.play().then(() => {
+      const TARGET = 0.28, STEPS = 100, DURATION = 16000;
+      const step = TARGET / STEPS, interval = DURATION / STEPS;
+      let n = 0;
+      rampRef.current = setInterval(() => {
+        n++;
+        a.volume = Math.min(TARGET, step * n);
+        if (n >= STEPS && rampRef.current) clearInterval(rampRef.current);
+      }, interval);
+    }).catch(() => {});
+  }, [started]);
+  return { ref, rampRef };
+}
+
+// ── Audio button ─────────────────────────────────────────────────────────────
+
+function AudioButton({ started, audioRef }: { started: boolean; audioRef: React.RefObject<HTMLAudioElement | null> }) {
+  const [playing, setPlaying] = useState(true);
+  const toggle = () => {
+    const a = audioRef.current;
+    if (!a) return;
+    if (playing) { a.pause(); setPlaying(false); }
+    else { a.play().catch(() => {}); setPlaying(true); }
+  };
+  return (
+    <button
+      className={`audio-btn${started ? ' show' : ''}${playing ? ' playing' : ''}`}
+      onClick={toggle}
+      aria-label={playing ? 'Pause music' : 'Play music'}
+    >
+      <div className="audio-ring">
+        <div className="audio-icon">
+          {playing ? (
+            <span className="audio-waves">
+              <span className="aw" /><span className="aw" /><span className="aw" />
+            </span>
+          ) : (
+            <span className="audio-pause-icon" />
+          )}
+        </div>
+      </div>
+      <span className="audio-label">music</span>
+    </button>
+  );
+}
+
+// ── Compass SVG ───────────────────────────────────────────────────────────────
+
+function Compass({ onOpen }: { onOpen: () => void }) {
+  return (
+    <button className="bd-compass" onClick={onOpen} aria-label="Open invitation" type="button">
+      <svg viewBox="0 0 220 220" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="110" cy="110" r="94" stroke="rgba(107,127,94,0.32)" strokeWidth="1" />
+        <circle cx="110" cy="110" r="82" stroke="rgba(107,127,94,0.14)" strokeWidth="1" strokeDasharray="3 7" />
+        <circle cx="110" cy="110" r="58" stroke="rgba(107,127,94,0.10)" strokeWidth="1" />
+        {[0, 30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330].map(a => (
+          <g key={a} transform={`rotate(${a},110,110)`}>
+            <line
+              x1="110" y1="16" x2="110" y2={a % 90 === 0 ? 29 : 24}
+              stroke="rgba(107,127,94,0.5)"
+              strokeWidth={a % 90 === 0 ? 1.1 : 0.7}
+            />
+          </g>
+        ))}
+        <path d="M110 51V110L145 132" stroke="rgba(107,127,94,0.3)" strokeWidth="1" strokeLinecap="round" />
+      </svg>
+      <div className="bd-compass-mono">T<span>&amp;</span>V</div>
+    </button>
+  );
+}
+
+// ── Splash ────────────────────────────────────────────────────────────────────
+
+function Splash({ c, onOpen }: { c: typeof C[Lang]; onOpen: () => void }) {
+  const [out, setOut] = useState(false);
+  const [gone, setGone] = useState(false);
+
+  const open = () => {
+    if (out) return;
+    setOut(true);
+    onOpen();
+    setTimeout(() => setGone(true), 900);
+  };
+
+  if (gone) return null;
+  return (
+    <div className={`bd-splash${out ? ' bd-splash-out' : ''}`} onClick={open}>
+      <div className="bd-splash-card">
+        <Compass onOpen={open} />
+        <p className="bd-tap-hint">{c.tap}</p>
+      </div>
+    </div>
+  );
+}
+
+// ── Cards ─────────────────────────────────────────────────────────────────────
+
+function HeroCard({ c }: { c: typeof C[Lang] }) {
+  const [ref, visible] = useReveal(0.1);
+  return (
+    <section ref={ref} className={`bd-card bd-hero-card bd-reveal${visible ? ' bd-in' : ''}`}>
+      <p className="bd-kicker">{c.kicker}</p>
+      <h2 className="bd-hero-names">Taslia &amp; Varian</h2>
+      <p className="bd-sub">{c.date}</p>
+      <p className="bd-location" style={{ marginTop: 4 }}>{c.together}</p>
+    </section>
+  );
+}
+
+function StoryCard({ c }: { c: typeof C[Lang] }) {
+  const [ref, visible] = useReveal();
+  return (
+    <section ref={ref} className={`bd-card bd-story-card bd-reveal${visible ? ' bd-in' : ''}`}>
+      <p className="bd-kicker">{c.sl}</p>
+      <h2 className="bd-card-title">{c.st}</h2>
+      <div className="bd-copy">
+        {c.sb.map((p, i) => <p key={i}>{p}</p>)}
+      </div>
+    </section>
+  );
+}
+
+function DateCard({ c }: { c: typeof C[Lang] }) {
+  const [ref, visible] = useReveal();
+  const googleUrl = 'https://calendar.google.com/calendar/render?action=TEMPLATE&text=Taslia%20%26%20Varian%20Wedding&dates=20260604/20260605&location=Aceh%2C%20Indonesia';
+  return (
+    <section ref={ref} className={`bd-card bd-date-card bd-reveal${visible ? ' bd-in' : ''}`}>
+      <p className="bd-kicker">{c.save}</p>
+      <div className="bd-date-num">04</div>
+      <div className="bd-date-row">
+        <span>{c.date.split('·')[1].trim()}</span>
+        <span>2026</span>
+      </div>
+      <p className="bd-location">{c.location}</p>
+      <p className="bd-details">{c.details}</p>
+      <div className="bd-actions">
+        <a className="bd-btn" href="/taslia-varian-wedding.ics" download>{c.dlCal}</a>
+        <a className="bd-btn bd-btn-ghost" href={googleUrl} target="_blank" rel="noreferrer">{c.gCal}</a>
+      </div>
+    </section>
+  );
+}
+
+function WishesCard({ c, lang }: { c: typeof C[Lang]; lang: Lang }) {
+  const [ref, visible] = useReveal();
+  const [state, handleSubmit] = useForm('mrejzzzd');
+  return (
+    <section ref={ref} className={`bd-card bd-wishes-card bd-reveal${visible ? ' bd-in' : ''}`}>
+      <p className="bd-kicker">{c.wl}</p>
+      <h2 className="bd-card-title">{c.wt}</h2>
+      {state.succeeded ? (
+        <p className="bd-thanks">{c.sent}</p>
+      ) : (
+        <form className="bd-form" onSubmit={handleSubmit}>
+          <input type="hidden" name="lang" value={lang} />
+          <input type="text" name="name" placeholder={c.name} required maxLength={80} />
+          <ValidationError field="name" errors={state.errors} className="bd-err" />
+          <textarea name="message" placeholder={c.msg} required maxLength={400} rows={4} />
+          <ValidationError field="message" errors={state.errors} className="bd-err" />
+          <button type="submit" className="bd-btn" disabled={state.submitting}>
+            {state.submitting ? '···' : c.send}
+          </button>
+        </form>
+      )}
+    </section>
+  );
+}
+
+// ── Root ──────────────────────────────────────────────────────────────────────
+
+export default function BackdropInvitation() {
+  const [lang, setLang] = useState<Lang>('en');
+  const [opened, setOpened] = useState(false);
+  const contentRef = useRef<HTMLElement>(null);
+  const { ref: audioRef } = useAudio(opened);
+  const c = C[lang];
+
+  const advanceCard = (event: MouseEvent<HTMLElement>) => {
+    const target = event.target as HTMLElement;
+    if (target.closest('a, button, input, textarea, select, label')) return;
+
+    const content = contentRef.current;
+    if (!content) return;
+
+    const cards = Array.from(content.querySelectorAll<HTMLElement>('.bd-card'));
+    const viewportCenter = window.innerHeight / 2;
+    const currentIndex = cards.reduce((bestIndex, card, index) => {
+      const bestRect = cards[bestIndex].getBoundingClientRect();
+      const cardRect = card.getBoundingClientRect();
+      const bestDistance = Math.abs(bestRect.top + bestRect.height / 2 - viewportCenter);
+      const cardDistance = Math.abs(cardRect.top + cardRect.height / 2 - viewportCenter);
+      return cardDistance < bestDistance ? index : bestIndex;
+    }, 0);
+
+    cards[currentIndex + 1]?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  };
+
+  return (
+    <div className="bd-root">
+      <audio ref={audioRef} src="/uploads/One Last Message.m4a" loop preload="auto" style={{ display: 'none' }} />
+      <img src="/reference/main-backdrop.png" alt="" className="bd-bg" />
+
+      <AudioButton started={opened} audioRef={audioRef} />
+
+      <div className={`bd-lang${opened ? ' bd-lang-show' : ''}`}>
+        <button className={`bd-lb${lang === 'en' ? ' bd-lb-on' : ''}`} onClick={() => setLang('en')}>EN</button>
+        <button className={`bd-lb${lang === 'id' ? ' bd-lb-on' : ''}`} onClick={() => setLang('id')}>ID</button>
+      </div>
+
+      <Splash c={c} onOpen={() => setOpened(true)} />
+
+      <main
+        ref={contentRef}
+        className={`bd-content${opened ? ' bd-content-in' : ''}`}
+        onClick={advanceCard}
+      >
+        <HeroCard c={c} />
+        <StoryCard c={c} />
+        <DateCard c={c} />
+        <WishesCard c={c} lang={lang} />
+        <footer className="bd-footer">Taslia &amp; Varian · MMXXVI</footer>
+      </main>
+    </div>
+  );
+}

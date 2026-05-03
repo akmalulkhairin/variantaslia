@@ -14,10 +14,717 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html { scroll-behavior: smooth; }
 body { background: var(--ink); color: var(--ink); font-family: 'Jost', sans-serif; overflow-x: hidden; }
+html.bd-page {
+  scroll-snap-type: y mandatory;
+}
+
+html.bd-page body {
+  overscroll-behavior-y: contain;
+}
+
 .site {
   min-height: 100svh;
   background: var(--ink);
 }
+
+/* ─── Backdrop Route ───────────────────────────── */
+.bd-root {
+  --bd-ink:    #31403c;
+  --bd-sage:   #6b7f5e;
+  --bd-paper:  rgba(255, 252, 248, 0.88);
+  --bd-border: rgba(107, 127, 94, 0.18);
+  --bd-mobile-safe: min(56vw, 250px);
+  --bd-mobile-hero-safe: min(62vw, 270px);
+  --bd-mobile-story-safe: min(56vw, 250px);
+  --bd-mobile-form-safe: min(56vw, 250px);
+  min-height: 100svh;
+  background: #f0ebe2;
+  color: var(--bd-ink);
+  font-family: 'Jost', sans-serif;
+}
+
+/* Full-screen fixed backdrop — flowers show on all screen sizes */
+.bd-bg {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center center;
+  background: #f0ebe2;
+}
+
+/* ── Splash ── */
+.bd-splash {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 16px;
+  cursor: pointer;
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+
+.bd-splash-out {
+  opacity: 0;
+  transform: scale(1.03);
+  pointer-events: none;
+}
+
+/* ── Shared card — no background, content sits inside the arch ── */
+.bd-card {
+  position: relative;
+  z-index: 2;
+  width: min(100%, 400px);
+  margin: 0 auto;
+  padding: 28px 32px;
+  text-align: center;
+}
+
+.bd-splash-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+}
+
+.bd-splash-kicker {
+  margin-top: 4px;
+  font-size: 11px;
+  letter-spacing: 0.34em;
+}
+
+/* ── Typography ── */
+.bd-kicker {
+  font-size: 10px;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--bd-sage);
+  opacity: 0.9;
+}
+
+.bd-monogram {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(40px, 12vw, 56px);
+  font-weight: 300;
+  line-height: 1;
+  color: var(--bd-sage);
+}
+
+.bd-monogram span {
+  font-style: italic;
+}
+
+.bd-splash-names {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(42px, 12vw, 60px);
+  font-weight: 300;
+  line-height: 1;
+  color: var(--bd-ink);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  text-shadow: 0 1px 14px rgba(255, 252, 248, 0.85);
+}
+
+.bd-amp {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 0.6em;
+  font-style: italic;
+  color: var(--bd-sage);
+  opacity: 0.8;
+}
+
+.bd-splash-date {
+  font-size: 11px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--bd-ink);
+  opacity: 0.65;
+}
+
+
+/* ── Content (post-open) ── */
+.bd-content {
+  position: relative;
+  z-index: 10;
+  opacity: 0;
+  transition: opacity 0.7s ease 0.1s;
+  pointer-events: none;
+}
+
+.bd-content-in {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Each card section fills the viewport so it always centres in the arch */
+.bd-content .bd-card {
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 32px;
+  width: min(100%, 400px);
+  scroll-snap-align: center;
+  scroll-snap-stop: always;
+}
+
+/* reveal animation */
+.bd-reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+
+.bd-reveal.bd-in {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ── Card content styles ── */
+.bd-hero-names {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(36px, 10vw, 52px);
+  font-weight: 300;
+  line-height: 1;
+  color: var(--bd-ink);
+  margin: 12px 0 8px;
+  text-shadow: 0 1px 12px rgba(255, 252, 248, 0.9);
+}
+
+.bd-card-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(28px, 7vw, 38px);
+  font-weight: 300;
+  line-height: 1.15;
+  color: var(--bd-ink);
+  margin: 12px 0 20px;
+  text-shadow: 0 1px 12px rgba(255, 252, 248, 0.9);
+}
+
+.bd-sub {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(18px, 4.5vw, 22px);
+  font-weight: 300;
+  font-style: italic;
+  color: var(--bd-ink);
+  opacity: 0.7;
+  margin-top: 4px;
+}
+
+.bd-copy {
+  display: grid;
+  gap: 14px;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(17px, 4vw, 20px);
+  font-weight: 300;
+  line-height: 1.6;
+  color: rgba(49, 64, 60, 0.85);
+  text-align: left;
+}
+
+.bd-date-num {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(80px, 22vw, 110px);
+  font-weight: 300;
+  line-height: 0.85;
+  color: var(--bd-sage);
+  margin: 8px 0 4px;
+}
+
+.bd-date-row {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  font-size: 12px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--bd-ink);
+  opacity: 0.7;
+  margin-bottom: 8px;
+}
+
+.bd-location {
+  font-size: 11px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--bd-sage);
+  opacity: 0.8;
+  margin-bottom: 20px;
+}
+
+.bd-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+}
+
+.bd-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 11px 22px;
+  border: 1px solid var(--bd-sage);
+  border-radius: 999px;
+  background: var(--bd-sage);
+  color: #fff;
+  font-family: 'Jost', sans-serif;
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+
+.bd-btn:hover {
+  background: transparent;
+  color: var(--bd-sage);
+}
+
+.bd-btn-ghost {
+  background: transparent;
+  color: var(--bd-sage);
+}
+
+.bd-btn-ghost:hover {
+  background: var(--bd-sage);
+  color: #fff;
+}
+
+.bd-thanks {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 22px;
+  font-weight: 300;
+  font-style: italic;
+  color: var(--bd-sage);
+  margin-top: 16px;
+}
+
+.bd-form {
+  display: grid;
+  gap: 10px;
+  margin-top: 16px;
+  text-align: left;
+}
+
+.bd-form input,
+.bd-form textarea {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid rgba(107, 127, 94, 0.3);
+  border-radius: 2px;
+  background: rgba(255, 252, 248, 0.55);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  color: var(--bd-ink);
+  font: inherit;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.bd-form input:focus,
+.bd-form textarea:focus {
+  border-color: var(--bd-sage);
+}
+
+.bd-form textarea {
+  resize: vertical;
+}
+
+.bd-err {
+  font-size: 12px;
+  color: #8f3f35;
+}
+
+.bd-footer {
+  text-align: center;
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--bd-ink);
+  opacity: 0.5;
+  padding: 16px 0 8px;
+}
+
+/* ── Compass ── */
+.bd-compass {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: clamp(130px, 38vw, 180px);
+  aspect-ratio: 1;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  animation: bdFloat 5.5s ease-in-out infinite;
+  transition: transform 0.25s ease, filter 0.25s ease;
+}
+
+.bd-compass:hover {
+  transform: scale(1.06);
+  filter: drop-shadow(0 12px 32px rgba(107, 127, 94, 0.28));
+}
+
+.bd-compass svg {
+  width: 100%;
+  height: 100%;
+  animation: bdTurn 28s linear infinite;
+}
+
+.bd-compass-mono {
+  position: absolute;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(28px, 8vw, 40px);
+  font-weight: 300;
+  color: var(--bd-sage);
+  letter-spacing: 0.02em;
+}
+
+.bd-compass-mono span {
+  font-style: italic;
+  opacity: 0.75;
+}
+
+@keyframes bdFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-7px); }
+}
+
+@keyframes bdTurn {
+  to { transform: rotate(360deg); }
+}
+
+/* ── Tap hint ── */
+.bd-tap-hint {
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--bd-ink);
+  opacity: 0.45;
+  animation: bdPulse 2.4s ease-in-out infinite;
+}
+
+@keyframes bdPulse {
+  0%, 100% { opacity: 0.45; }
+  50% { opacity: 0.18; }
+}
+
+/* ── Details ── */
+.bd-details {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 16px;
+  font-style: italic;
+  color: var(--bd-ink);
+  opacity: 0.55;
+  margin-bottom: 20px;
+}
+
+/* ── Lang toggle ── */
+.bd-lang {
+  position: fixed;
+  top: 18px;
+  right: 18px;
+  z-index: 50;
+  display: flex;
+  gap: 4px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.5s ease 0.6s;
+}
+
+.bd-lang-show {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.bd-lb {
+  padding: 5px 10px;
+  border: 1px solid rgba(107, 127, 94, 0.35);
+  border-radius: 999px;
+  background: rgba(255, 252, 248, 0.7);
+  backdrop-filter: blur(8px);
+  color: var(--bd-sage);
+  font-family: 'Jost', sans-serif;
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  cursor: pointer;
+  opacity: 0.6;
+  transition: opacity 0.2s, background 0.2s;
+}
+
+.bd-lb.bd-lb-on {
+  opacity: 1;
+  background: var(--bd-sage);
+  color: #fff;
+  border-color: var(--bd-sage);
+}
+
+/* ── Responsive ── */
+@media (max-width: 599px) {
+  .bd-bg {
+    object-fit: cover;
+    object-position: center center;
+  }
+
+  .bd-splash {
+    padding: max(16px, env(safe-area-inset-top)) 20px max(18px, env(safe-area-inset-bottom));
+  }
+
+  .bd-splash-card {
+    gap: 16px;
+    transform: translateY(-2svh);
+  }
+
+  .bd-compass {
+    width: clamp(118px, 34vw, 148px);
+  }
+
+  .bd-tap-hint {
+    max-width: 220px;
+    line-height: 1.8;
+    letter-spacing: 0.2em;
+  }
+
+  .bd-lang {
+    top: max(14px, env(safe-area-inset-top));
+    right: 14px;
+  }
+
+  .bd-lb {
+    padding: 6px 9px;
+    background: rgba(255, 252, 248, 0.78);
+  }
+
+  .bd-content .bd-card {
+    width: var(--bd-mobile-safe);
+    min-height: 100svh;
+    padding: max(29svh, env(safe-area-inset-top) + 72px) 0 max(16svh, env(safe-area-inset-bottom) + 58px);
+  }
+
+  .bd-content .bd-hero-card {
+    width: var(--bd-mobile-hero-safe);
+  }
+
+  .bd-kicker {
+    font-size: 9px;
+    letter-spacing: 0.28em;
+  }
+
+  .bd-hero-names {
+    font-size: clamp(34px, 10.8vw, 42px);
+    margin: 12px 0 9px;
+  }
+
+  .bd-card-title {
+    font-size: clamp(25px, 7.6vw, 32px);
+    margin-bottom: 16px;
+  }
+
+  .bd-copy {
+    gap: 12px;
+    font-size: clamp(14px, 3.8vw, 16px);
+    line-height: 1.45;
+  }
+
+  .bd-content .bd-story-card {
+    width: var(--bd-mobile-story-safe);
+  }
+
+  .bd-story-card .bd-card-title {
+    font-size: clamp(22px, 6.1vw, 26px);
+    line-height: 1.12;
+    margin-bottom: 12px;
+  }
+
+  .bd-story-card .bd-copy {
+    gap: 9px;
+    font-size: clamp(12px, 3.2vw, 14px);
+    line-height: 1.38;
+  }
+
+  .bd-date-row,
+  .bd-location {
+    letter-spacing: 0.18em;
+  }
+
+  .bd-actions,
+  .bd-form {
+    width: 100%;
+  }
+
+  .bd-content .bd-wishes-card {
+    width: var(--bd-mobile-form-safe);
+  }
+
+  .bd-wishes-card .bd-card-title {
+    font-size: clamp(24px, 7vw, 30px);
+    line-height: 1.12;
+  }
+
+  .bd-wishes-card .bd-form {
+    gap: 10px;
+    margin-top: 14px;
+  }
+
+  .bd-wishes-card .bd-form input,
+  .bd-wishes-card .bd-form textarea {
+    font-size: 13px;
+  }
+
+  .bd-wishes-card .bd-form textarea {
+    min-height: 118px;
+  }
+
+  .bd-btn {
+    min-height: 42px;
+    padding: 10px 16px;
+    font-size: 9px;
+    letter-spacing: 0.14em;
+  }
+}
+
+@media (max-width: 380px), (max-height: 560px) {
+  .bd-root {
+    --bd-mobile-safe: min(56vw, 194px);
+    --bd-mobile-hero-safe: min(60vw, 210px);
+    --bd-mobile-story-safe: min(56vw, 194px);
+    --bd-mobile-form-safe: min(56vw, 194px);
+  }
+
+  .bd-lang {
+    top: 10px;
+    right: 10px;
+    transform: scale(0.9);
+    transform-origin: top right;
+  }
+
+  .bd-content .bd-card {
+    padding-top: max(27svh, env(safe-area-inset-top) + 56px);
+    padding-bottom: max(18svh, env(safe-area-inset-bottom) + 76px);
+  }
+
+  .bd-kicker {
+    font-size: 8px;
+    letter-spacing: 0.24em;
+  }
+
+  .bd-hero-names {
+    font-size: clamp(29px, 9.4vw, 34px);
+  }
+
+  .bd-card-title {
+    font-size: clamp(22px, 7.4vw, 26px);
+    line-height: 1.08;
+    margin: 9px 0 12px;
+  }
+
+  .bd-sub {
+    font-size: 17px;
+  }
+
+  .bd-copy {
+    gap: 9px;
+    font-size: clamp(12px, 3.8vw, 14px);
+    line-height: 1.38;
+  }
+
+  .bd-story-card .bd-card-title {
+    font-size: clamp(18px, 5.8vw, 21px);
+    line-height: 1.12;
+    margin: 7px 0 8px;
+  }
+
+  .bd-story-card .bd-copy {
+    gap: 7px;
+    font-size: clamp(10px, 3.1vw, 11.5px);
+    line-height: 1.28;
+  }
+
+  .bd-date-num {
+    font-size: clamp(68px, 20vw, 84px);
+  }
+
+  .bd-location,
+  .bd-date-row {
+    font-size: 9px;
+    letter-spacing: 0.16em;
+  }
+
+  .bd-details {
+    font-size: 14px;
+    margin-bottom: 14px;
+  }
+
+  .bd-actions {
+    gap: 8px;
+  }
+
+  .bd-btn {
+    min-height: 36px;
+    padding: 8px 12px;
+    font-size: 8px;
+    letter-spacing: 0.12em;
+  }
+
+  .bd-form {
+    gap: 8px;
+    margin-top: 12px;
+  }
+
+  .bd-form input,
+  .bd-form textarea {
+    padding: 9px 11px;
+    font-size: 13px;
+  }
+
+  .bd-wishes-card .bd-card-title {
+    font-size: clamp(20px, 6.4vw, 23px);
+    margin: 7px 0 10px;
+  }
+
+  .bd-wishes-card .bd-form {
+    gap: 8px;
+    margin-top: 10px;
+  }
+
+  .bd-wishes-card .bd-form input,
+  .bd-wishes-card .bd-form textarea {
+    padding: 8px 10px;
+    font-size: 12px;
+  }
+
+  .bd-wishes-card .bd-form textarea {
+    min-height: 92px;
+  }
+}
+
+@media (min-width: 600px) {
+  .bd-card {
+    padding: 48px 44px;
+  }
+
+  .bd-content {
+    padding: 40px 24px 60px;
+  }
+}
+
+@media (min-width: 900px) {
+  .bd-content {
+    max-width: 480px;
+    margin: 0 auto;
+    padding: 48px 0 72px;
+  }
+}
+
 .site-watercolor {
   --ink:    #3a2731;
   --ink2:   #efe4dc;
