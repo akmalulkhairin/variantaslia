@@ -1,4 +1,4 @@
-import { type MouseEvent, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useForm, ValidationError } from '@formspree/react';
 
 // ── Copy ────────────────────────────────────────────────────────────────────
@@ -14,13 +14,15 @@ const C = {
     sb: [
       'Taslia is from Aceh. Varian is from Bukittinggi, in the highlands of West Sumatra.',
       'They were far from home when they found each other at Leibniz Universität in Hannover, Germany.',
-      'Two Sumatran souls in a foreign city, finding comfort in familiar roots — and building a promise to return home together.',
+      'In a city of rain and old streets, a quiet crossing became a promise to return home together.',
     ],
     together: 'Together with their families',
     celebrate: 'invite you to celebrate their wedding',
     save: 'Save the Date',
     location: 'Aceh · Indonesia',
-    details: 'Venue details to follow',
+    venue: 'Beulangong Raja\nResto & Garden',
+    mapTitle: 'Location',
+    openMap: 'Open in Google Maps',
     dlCal: 'Download calendar',
     gCal: 'Google Calendar',
     wl: 'Well Wishes',
@@ -37,21 +39,23 @@ const C = {
     date: '04 · Juni · 2026',
     open: 'Buka Undangan',
     sl: 'Cerita Kami',
-    st: 'Jauh dari tanah air,\nnamun hati saling menemukan',
+    st: 'Di tanah rantau,\nhati yang saling menemukan',
     sb: [
-      'Taslia dari Aceh. Varian dari Bukittinggi, di dataran tinggi Sumatera Barat.',
-      'Mereka jauh dari rumah ketika takdir mempertemukan keduanya di Leibniz Universität, Hannover, Jerman.',
-      'Dua jiwa Sumatra di kota asing, menemukan ketenangan dalam akar yang sama — dan membangun janji untuk pulang bersama.',
+      'Taslia berasal dari Aceh. Varian dari Bukittinggi, Sumatera Barat.',
+      'Di perantauan, takdir mempertemukan mereka di Leibniz Universität, Hannover, Jerman.',
+      'Di kota hujan dan jalan-jalan tua, pertemuan sederhana tumbuh menjadi janji untuk pulang bersama.',
     ],
-    together: 'Bersama keluarga mereka',
-    celebrate: 'mengundang Anda merayakan pernikahan mereka',
+    together: 'Bersama kedua keluarga',
+    celebrate: 'mengundang Anda untuk hadir merayakan pernikahan mereka',
     save: 'Tandai Tanggalnya',
     location: 'Aceh · Indonesia',
-    details: 'Detail tempat segera menyusul',
+    venue: 'Beulangong Raja\nResto & Garden',
+    mapTitle: 'Lokasi',
+    openMap: 'Buka di Google Maps',
     dlCal: 'Unduh kalender',
     gCal: 'Google Calendar',
     wl: 'Ucapan',
-    wt: 'Tinggalkan pesan untuk pasangan',
+    wt: 'Titipkan doa dan ucapan untuk pasangan',
     name: 'Nama Anda',
     msg: 'Pesan Anda',
     send: 'Kirim ucapan',
@@ -151,7 +155,6 @@ function Compass({ onOpen }: { onOpen: () => void }) {
             />
           </g>
         ))}
-        <path d="M110 51V110L145 132" stroke="rgba(107,127,94,0.3)" strokeWidth="1" strokeLinecap="round" />
       </svg>
       <div className="bd-compass-mono">T<span>&amp;</span>V</div>
     </button>
@@ -221,11 +224,23 @@ function DateCard({ c }: { c: typeof C[Lang] }) {
         <span>2026</span>
       </div>
       <p className="bd-location">{c.location}</p>
-      <p className="bd-details">{c.details}</p>
       <div className="bd-actions">
         <a className="bd-btn" href="/taslia-varian-wedding.ics" download>{c.dlCal}</a>
         <a className="bd-btn bd-btn-ghost" href={googleUrl} target="_blank" rel="noreferrer">{c.gCal}</a>
       </div>
+    </section>
+  );
+}
+
+function MapCard({ c }: { c: typeof C[Lang] }) {
+  const [ref, visible] = useReveal();
+  const mapsUrl = 'https://www.google.com/maps/search/?api=1&query=5.4837634,95.2545945';
+  return (
+    <section ref={ref} className={`bd-card bd-map-card bd-reveal${visible ? ' bd-in' : ''}`}>
+      <p className="bd-kicker">{c.mapTitle}</p>
+      <h2 className="bd-card-title">{c.venue}</h2>
+      <p className="bd-location">{c.location}</p>
+      <a className="bd-btn" href={mapsUrl} target="_blank" rel="noreferrer">{c.openMap}</a>
     </section>
   );
 }
@@ -260,29 +275,8 @@ function WishesCard({ c, lang }: { c: typeof C[Lang]; lang: Lang }) {
 export default function BackdropInvitation() {
   const [lang, setLang] = useState<Lang>('en');
   const [opened, setOpened] = useState(false);
-  const contentRef = useRef<HTMLElement>(null);
   const { ref: audioRef } = useAudio(opened);
   const c = C[lang];
-
-  const advanceCard = (event: MouseEvent<HTMLElement>) => {
-    const target = event.target as HTMLElement;
-    if (target.closest('a, button, input, textarea, select, label')) return;
-
-    const content = contentRef.current;
-    if (!content) return;
-
-    const cards = Array.from(content.querySelectorAll<HTMLElement>('.bd-card'));
-    const viewportCenter = window.innerHeight / 2;
-    const currentIndex = cards.reduce((bestIndex, card, index) => {
-      const bestRect = cards[bestIndex].getBoundingClientRect();
-      const cardRect = card.getBoundingClientRect();
-      const bestDistance = Math.abs(bestRect.top + bestRect.height / 2 - viewportCenter);
-      const cardDistance = Math.abs(cardRect.top + cardRect.height / 2 - viewportCenter);
-      return cardDistance < bestDistance ? index : bestIndex;
-    }, 0);
-
-    cards[currentIndex + 1]?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-  };
 
   return (
     <div className="bd-root">
@@ -298,14 +292,11 @@ export default function BackdropInvitation() {
 
       <Splash c={c} onOpen={() => setOpened(true)} />
 
-      <main
-        ref={contentRef}
-        className={`bd-content${opened ? ' bd-content-in' : ''}`}
-        onClick={advanceCard}
-      >
+      <main className={`bd-content${opened ? ' bd-content-in' : ''}`}>
         <HeroCard c={c} />
         <StoryCard c={c} />
         <DateCard c={c} />
+        <MapCard c={c} />
         <WishesCard c={c} lang={lang} />
         <footer className="bd-footer">Taslia &amp; Varian · MMXXVI</footer>
       </main>
