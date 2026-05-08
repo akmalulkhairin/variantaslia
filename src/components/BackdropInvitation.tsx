@@ -9,6 +9,8 @@ const C = {
     kicker: 'Wedding Invitation',
     date: '04 · June · 2026',
     open: 'Open Invitation',
+    brideParents: 'second daughter of Mr. Ir. Nazaruddin and Mrs. Dra. Cut Kemalawati',
+    groomParents: 'first son of Mr. Sainur Arif and Mrs. Dian Indonesiana',
     sl: 'Our Story',
     st: 'Far from home,\nclose to each other',
     sb: [
@@ -38,6 +40,8 @@ const C = {
     kicker: 'Undangan Pernikahan',
     date: '04 · Juni · 2026',
     open: 'Buka Undangan',
+    brideParents: 'anak ketiga dari Bpk Ir. Nazaruddin dan Ibu Dra. Cut Kemalawati',
+    groomParents: 'anak pertama dari Bpk Sainur Arif dan Ibu Dian Indonesiana',
     sl: 'Cerita Kami',
     st: 'Di tanah rantau,\nhati yang saling menemukan',
     sb: [
@@ -139,9 +143,9 @@ function AudioButton({ started, audioRef }: { started: boolean; audioRef: React.
 
 // ── Compass SVG ───────────────────────────────────────────────────────────────
 
-function Compass({ onOpen }: { onOpen: () => void }) {
+function Compass() {
   return (
-    <button className="bd-compass" onClick={onOpen} aria-label="Open invitation" type="button">
+    <div className="bd-compass" aria-hidden="true">
       <svg viewBox="0 0 220 220" fill="none" xmlns="http://www.w3.org/2000/svg">
         <circle cx="110" cy="110" r="94" stroke="rgba(107,127,94,0.32)" strokeWidth="1" />
         <circle cx="110" cy="110" r="82" stroke="rgba(107,127,94,0.14)" strokeWidth="1" strokeDasharray="3 7" />
@@ -157,7 +161,7 @@ function Compass({ onOpen }: { onOpen: () => void }) {
         ))}
       </svg>
       <div className="bd-compass-mono">T<span>&amp;</span>V</div>
-    </button>
+    </div>
   );
 }
 
@@ -176,9 +180,21 @@ function Splash({ c, onOpen }: { c: typeof C[Lang]; onOpen: () => void }) {
 
   if (gone) return null;
   return (
-    <div className={`bd-splash${out ? ' bd-splash-out' : ''}`} onClick={open}>
+    <div
+      className={`bd-splash${out ? ' bd-splash-out' : ''}`}
+      onClick={open}
+      role="button"
+      tabIndex={0}
+      aria-label="Open invitation"
+      onKeyDown={(event) => {
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault();
+          open();
+        }
+      }}
+    >
       <div className="bd-splash-card">
-        <Compass onOpen={open} />
+        <Compass />
         <p className="bd-tap-hint">{c.tap}</p>
       </div>
     </div>
@@ -192,7 +208,17 @@ function HeroCard({ c }: { c: typeof C[Lang] }) {
   return (
     <section ref={ref} className={`bd-card bd-hero-card bd-reveal${visible ? ' bd-in' : ''}`}>
       <p className="bd-kicker">{c.kicker}</p>
-      <h2 className="bd-hero-names">Taslia &amp; Varian</h2>
+      <div className="bd-hero-names">
+        <div className="bd-name-block">
+          <h2>Taslia Khaira Nazaruddin</h2>
+          <p>{c.brideParents}</p>
+        </div>
+        <span className="bd-name-amp">&amp;</span>
+        <div className="bd-name-block">
+          <h2>Varian Furqan Arif</h2>
+          <p>{c.groomParents}</p>
+        </div>
+      </div>
       <p className="bd-sub">{c.date}</p>
       <p className="bd-location" style={{ marginTop: 4 }}>{c.together}</p>
     </section>

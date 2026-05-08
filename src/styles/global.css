@@ -116,6 +116,7 @@ html.bd-page body {
   flex-direction: column;
   align-items: center;
   gap: 18px;
+  pointer-events: none;
 }
 
 .bd-splash-kicker {
@@ -235,13 +236,44 @@ html.bd-page body {
 
 /* ── Card content styles ── */
 .bd-hero-names {
+  display: grid;
+  justify-items: center;
+  gap: 6px;
+  margin: 12px 0 10px;
+}
+
+.bd-name-block {
+  display: grid;
+  justify-items: center;
+  gap: 6px;
+}
+
+.bd-name-block h2 {
   font-family: 'Cormorant Garamond', serif;
-  font-size: clamp(36px, 10vw, 52px);
+  font-size: clamp(29px, 7.2vw, 42px);
   font-weight: 300;
-  line-height: 1;
+  line-height: 1.02;
   color: var(--bd-ink);
-  margin: 12px 0 8px;
+  margin: 0;
   text-shadow: 0 1px 12px rgba(255, 252, 248, 0.9);
+}
+
+.bd-name-block p {
+  margin: 0;
+  font-size: 9px;
+  line-height: 1.55;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(49, 64, 60, 0.64);
+}
+
+.bd-name-amp {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(20px, 5vw, 28px);
+  font-style: italic;
+  color: var(--bd-sage);
+  opacity: 0.85;
+  line-height: 0.85;
 }
 
 .bd-card-title {
@@ -412,9 +444,9 @@ html.bd-page body {
   background: none;
   border: none;
   padding: 0;
-  cursor: pointer;
   animation: bdFloat 5.5s ease-in-out infinite;
   transition: transform 0.25s ease, filter 0.25s ease;
+  pointer-events: none;
 }
 
 .bd-compass:hover {
@@ -539,7 +571,18 @@ html.bd-page body {
   }
 
   .bd-hero-names {
-    font-size: clamp(34px, 10.8vw, 42px);
+    gap: 5px;
+    margin-bottom: 8px;
+  }
+
+  .bd-name-block h2 {
+    font-size: clamp(28px, 8.4vw, 34px);
+  }
+
+  .bd-name-block p {
+    font-size: 8px;
+    line-height: 1.45;
+    letter-spacing: 0.08em;
   }
 
   .bd-card-title {
@@ -571,7 +614,11 @@ html.bd-page body {
   }
 
   .bd-hero-names {
-    font-size: 44px;
+    gap: 5px;
+  }
+
+  .bd-name-block h2 {
+    font-size: 38px;
   }
 }
 
