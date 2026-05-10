@@ -39,7 +39,7 @@ html.bd-page body {
   --bd-frame-width: min(100vw, 56.25svh);
   --bd-safe-width: min(400px, calc(var(--bd-frame-width) * 0.64));
   --bd-hero-safe-width: min(420px, calc(var(--bd-frame-width) * 0.72));
-  --bd-copy-safe-width: min(360px, calc(var(--bd-frame-width) * 0.58));
+  --bd-copy-safe-width: min(360px, calc(var(--bd-frame-width) * 0.64));
   height: 100svh;
   overflow: hidden;
   background: #f0ebe2;
@@ -246,16 +246,18 @@ html.bd-page body {
   display: grid;
   justify-items: center;
   gap: 6px;
+  width: 100%;
 }
 
 .bd-name-block h2 {
   font-family: 'Cormorant Garamond', serif;
-  font-size: clamp(29px, 7.2vw, 42px);
+  font-size: clamp(24px, calc(var(--bd-frame-width) * 0.065), 34px);
   font-weight: 300;
   line-height: 1.02;
   color: var(--bd-ink);
   margin: 0;
   text-shadow: 0 1px 12px rgba(255, 252, 248, 0.9);
+  white-space: nowrap;
 }
 
 .bd-name-block p {
@@ -269,7 +271,7 @@ html.bd-page body {
 
 .bd-name-amp {
   font-family: 'Cormorant Garamond', serif;
-  font-size: clamp(20px, 5vw, 28px);
+  font-size: clamp(18px, calc(var(--bd-frame-width) * 0.048), 26px);
   font-style: italic;
   color: var(--bd-sage);
   opacity: 0.85;
@@ -278,7 +280,7 @@ html.bd-page body {
 
 .bd-card-title {
   font-family: 'Cormorant Garamond', serif;
-  font-size: clamp(28px, 7vw, 38px);
+  font-size: clamp(26px, calc(var(--bd-frame-width) * 0.082), 36px);
   font-weight: 300;
   line-height: 1.15;
   color: var(--bd-ink);
@@ -288,7 +290,7 @@ html.bd-page body {
 
 .bd-sub {
   font-family: 'Cormorant Garamond', serif;
-  font-size: clamp(18px, 4.5vw, 22px);
+  font-size: clamp(17px, calc(var(--bd-frame-width) * 0.046), 21px);
   font-weight: 300;
   font-style: italic;
   color: var(--bd-ink);
@@ -300,7 +302,7 @@ html.bd-page body {
   display: grid;
   gap: 14px;
   font-family: 'Cormorant Garamond', serif;
-  font-size: clamp(17px, 4vw, 20px);
+  font-size: clamp(15px, calc(var(--bd-frame-width) * 0.043), 18px);
   font-weight: 300;
   line-height: 1.6;
   color: rgba(49, 64, 60, 0.85);
@@ -309,7 +311,7 @@ html.bd-page body {
 
 .bd-date-num {
   font-family: 'Cormorant Garamond', serif;
-  font-size: clamp(80px, 22vw, 110px);
+  font-size: clamp(76px, calc(var(--bd-frame-width) * 0.23), 104px);
   font-weight: 300;
   line-height: 0.85;
   color: var(--bd-sage);
@@ -576,7 +578,7 @@ html.bd-page body {
   }
 
   .bd-name-block h2 {
-    font-size: clamp(28px, 8.4vw, 34px);
+    font-size: clamp(21px, 6.6vw, 27px);
   }
 
   .bd-name-block p {
@@ -615,10 +617,6 @@ html.bd-page body {
 
   .bd-hero-names {
     gap: 5px;
-  }
-
-  .bd-name-block h2 {
-    font-size: 38px;
   }
 }
 
