@@ -303,7 +303,7 @@ function WishesCard({ c, lang }: { c: typeof C[Lang]; lang: Lang }) {
 // ── Root ──────────────────────────────────────────────────────────────────────
 
 export default function BackdropInvitation() {
-  const [lang, setLang] = useState<Lang>('en');
+  const [lang, setLang] = useState<Lang>('id');
   const [opened, setOpened] = useState(false);
   const { ref: audioRef } = useAudio(opened);
   const c = C[lang];

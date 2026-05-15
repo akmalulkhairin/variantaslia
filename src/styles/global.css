@@ -299,11 +299,11 @@ html.bd-page body {
 }
 
 .bd-time {
-  font-size: 10px;
-  letter-spacing: 0.18em;
+  font-size: clamp(11px, calc(var(--bd-frame-width) * 0.03), 13px);
+  letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--bd-sage);
-  opacity: 0.78;
+  opacity: 0.84;
   margin-top: 6px;
 }
 
@@ -597,7 +597,7 @@ html.bd-page body {
   }
 
   .bd-time {
-    font-size: 9px;
+    font-size: 10.5px;
     margin-top: 5px;
   }
 
