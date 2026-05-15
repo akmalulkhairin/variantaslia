@@ -6,8 +6,9 @@ import { useForm, ValidationError } from '@formspree/react';
 const C = {
   en: {
     tap: 'tap the compass to open',
-    kicker: 'Wedding Invitation',
+    kicker: 'Wedding Ceremony',
     date: '04 · June · 2026',
+    time: '10.00 AM',
     open: 'Open Invitation',
     brideParents: 'second daughter of Mr. Ir. Nazaruddin and Mrs. Dra. Cut Kemalawati',
     groomParents: 'first son of Mr. Sainur Arif and Mrs. Dian Indonesiana',
@@ -37,8 +38,9 @@ const C = {
   },
   id: {
     tap: 'sentuh kompas untuk membuka',
-    kicker: 'Undangan Pernikahan',
+    kicker: 'Undangan Akad Pernikahan',
     date: '04 · Juni · 2026',
+    time: '10.00 AM',
     open: 'Buka Undangan',
     brideParents: 'anak ketiga dari Bpk Ir. Nazaruddin dan Ibu Dra. Cut Kemalawati',
     groomParents: 'anak pertama dari Bpk Sainur Arif dan Ibu Dian Indonesiana',
@@ -220,6 +222,7 @@ function HeroCard({ c }: { c: typeof C[Lang] }) {
         </div>
       </div>
       <p className="bd-sub">{c.date}</p>
+      <p className="bd-time">{c.time}</p>
       <p className="bd-location" style={{ marginTop: 4 }}>{c.together}</p>
     </section>
   );
@@ -240,7 +243,7 @@ function StoryCard({ c }: { c: typeof C[Lang] }) {
 
 function DateCard({ c }: { c: typeof C[Lang] }) {
   const [ref, visible] = useReveal();
-  const googleUrl = 'https://calendar.google.com/calendar/render?action=TEMPLATE&text=Taslia%20%26%20Varian%20Wedding&dates=20260604/20260605&location=Aceh%2C%20Indonesia';
+  const googleUrl = 'https://calendar.google.com/calendar/render?action=TEMPLATE&text=Taslia%20%26%20Varian%20Wedding%20Ceremony&dates=20260604T100000/20260604T120000&ctz=Asia%2FJakarta&location=Beulangong%20Raja%20Resto%20%26%20Garden%2C%20Aceh%2C%20Indonesia';
   return (
     <section ref={ref} className={`bd-card bd-date-card bd-reveal${visible ? ' bd-in' : ''}`}>
       <p className="bd-kicker">{c.save}</p>
@@ -249,6 +252,7 @@ function DateCard({ c }: { c: typeof C[Lang] }) {
         <span>{c.date.split('·')[1].trim()}</span>
         <span>2026</span>
       </div>
+      <p className="bd-time">{c.time}</p>
       <p className="bd-location">{c.location}</p>
       <div className="bd-actions">
         <a className="bd-btn" href="/taslia-varian-wedding.ics" download>{c.dlCal}</a>

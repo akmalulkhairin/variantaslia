@@ -298,6 +298,15 @@ html.bd-page body {
   margin-top: 4px;
 }
 
+.bd-time {
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--bd-sage);
+  opacity: 0.78;
+  margin-top: 6px;
+}
+
 .bd-copy {
   display: grid;
   gap: 14px;
@@ -565,7 +574,7 @@ html.bd-page body {
   }
 
   .bd-content .bd-card {
-    padding: 58px 0 38px;
+    padding: 68px 0 28px;
   }
 
   .bd-compass {
@@ -585,6 +594,11 @@ html.bd-page body {
     font-size: 8px;
     line-height: 1.45;
     letter-spacing: 0.08em;
+  }
+
+  .bd-time {
+    font-size: 9px;
+    margin-top: 5px;
   }
 
   .bd-card-title {

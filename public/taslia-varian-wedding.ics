@@ -6,10 +6,10 @@ METHOD:PUBLISH
 BEGIN:VEVENT
 UID:taslia-varian-wedding-20260604@wedding-invitation
 DTSTAMP:20260501T000000Z
-DTSTART;VALUE=DATE:20260604
-DTEND;VALUE=DATE:20260605
-SUMMARY:Taslia & Varian Wedding
-DESCRIPTION:Wedding celebration of Taslia Khaira and Varian Furqan.
-LOCATION:Aceh, Indonesia
+DTSTART;TZID=Asia/Jakarta:20260604T100000
+DTEND;TZID=Asia/Jakarta:20260604T120000
+SUMMARY:Taslia & Varian Wedding Ceremony
+DESCRIPTION:Wedding ceremony of Taslia Khaira Nazaruddin and Varian Furqan Arif.
+LOCATION:Beulangong Raja Resto & Garden, Aceh, Indonesia
 END:VEVENT
 END:VCALENDAR
