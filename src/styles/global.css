@@ -577,6 +577,10 @@ html.bd-page body {
     padding: 68px 0 28px;
   }
 
+  .bd-content .bd-hero-card {
+    transform: translateY(15px);
+  }
+
   .bd-compass {
     width: clamp(118px, 34vw, 148px);
   }
