@@ -40,7 +40,7 @@ const C = {
     tap: 'sentuh kompas untuk membuka',
     kicker: 'Undangan Akad Pernikahan',
     date: '04 · Juni · 2026',
-    time: '10.00 AM',
+    time: '10.00 WIB',
     open: 'Buka Undangan',
     brideParents: 'anak ketiga dari Bpk Ir. Nazaruddin dan Ibu Dra. Cut Kemalawati',
     groomParents: 'anak pertama dari Bpk Sainur Arif dan Ibu Dian Indonesiana',
