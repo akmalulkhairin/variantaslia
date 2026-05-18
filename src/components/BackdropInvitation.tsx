@@ -223,7 +223,6 @@ function HeroCard({ c }: { c: typeof C[Lang] }) {
       </div>
       <p className="bd-sub">{c.date}</p>
       <p className="bd-time">{c.time}</p>
-      <p className="bd-location" style={{ marginTop: 4 }}>{c.together}</p>
     </section>
   );
 }
