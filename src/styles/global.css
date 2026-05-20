@@ -126,8 +126,8 @@ html.bd-page body {
 
 /* ── Typography ── */
 .bd-kicker {
-  font-size: 12px;
-  letter-spacing: 0.32em;
+  font-size: 10px;
+  letter-spacing: 0.28em;
   text-transform: uppercase;
   color: var(--bd-sage);
   opacity: 0.9;
@@ -261,9 +261,9 @@ html.bd-page body {
 
 .bd-name-block p {
   margin: 0;
-  font-size: 11px;
-  line-height: 1.55;
-  letter-spacing: 0.12em;
+  font-size: 9px;
+  line-height: 1.6;
+  letter-spacing: 0.10em;
   text-transform: uppercase;
   color: rgba(49, 64, 60, 0.64);
   white-space: pre-line;
@@ -362,7 +362,6 @@ html.bd-page body {
 
 .bd-date-card .bd-kicker {
   font-weight: 600;
-  font-size: 13px;
 }
 
 .bd-date-card .bd-time {
@@ -667,9 +666,9 @@ html.bd-page body {
   }
 
   .bd-name-block p {
-    font-size: 10px;
+    font-size: 8px;
     line-height: 1.45;
-    letter-spacing: 0.08em;
+    letter-spacing: 0.07em;
   }
 
   .bd-time {
