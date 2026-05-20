@@ -373,8 +373,9 @@ html.bd-page body {
 }
 
 .bd-date-time {
+  font-size: clamp(34px, calc(var(--bd-frame-width) * 0.11), 48px);
   margin: 4px 0 0;
-  line-height: 0.85;
+  line-height: 0.9;
 }
 
 .bd-date-unit {
