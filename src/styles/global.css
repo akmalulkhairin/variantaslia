@@ -78,7 +78,7 @@ html.bd-page body {
   top: 0;
   left: 50%;
   transform: translateX(-50%);
-  height: 100lvh;
+  height: 100svh;
   width: auto;
   z-index: 0;
 }
@@ -181,35 +181,41 @@ html.bd-page body {
   position: fixed;
   inset: 0;
   z-index: 10;
-  height: 100svh;
-  overflow-x: hidden;
-  overflow-y: auto;
-  overscroll-behavior-y: contain;
-  scroll-snap-type: y mandatory;
-  -webkit-overflow-scrolling: touch;
-  opacity: 0;
-  transition: opacity 0.7s ease 0.1s;
-  pointer-events: none;
+  overflow: hidden;
+  pointer-events: auto;
 }
 
 .bd-content-in {
+  pointer-events: auto;
+}
+
+/* Each slot is a full-screen overlay; only the active one is visible */
+.bd-card-slot {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.55s ease;
+}
+
+.bd-card-slot.bd-slot-active {
   opacity: 1;
   pointer-events: auto;
 }
 
-/* Each card section fills the viewport so it always centres in the arch */
 .bd-content .bd-card {
-  height: 100svh;
-  min-height: 100svh;
-  flex: 0 0 100svh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 60px 0;
+  padding: 60px 0 80px;
   width: var(--bd-safe-width);
-  scroll-snap-align: start;
-  scroll-snap-stop: normal;
+  max-height: 100svh;
+  overflow-y: auto;
+  cursor: pointer;
 }
 
 .bd-content .bd-hero-card {
@@ -520,6 +526,43 @@ html.bd-page body {
   box-shadow: inset 0 0 0 3px rgba(255, 252, 248, 0.9);
 }
 
+.bd-footer-inline {
+  margin-top: 28px;
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--bd-sage);
+  opacity: 0.5;
+}
+
+.bd-progress {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  z-index: 30;
+}
+
+.bd-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: rgba(107, 127, 94, 0.3);
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  transition: background 0.3s, width 0.3s, border-radius 0.3s;
+}
+
+.bd-dot.bd-dot-active {
+  background: var(--bd-sage);
+  width: 18px;
+  border-radius: 3px;
+}
+
 .bd-footer {
   text-align: center;
   font-size: 11px;
@@ -654,7 +697,7 @@ html.bd-page body {
   }
 
   .bd-content .bd-card {
-    padding: 10svh 0;
+    padding: 56px 0 80px;
   }
 
   .bd-compass {

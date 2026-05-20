@@ -45,6 +45,7 @@ const C = {
     rsend: 'Send RSVP',
     rsent: 'See you on the day ♡',
     rno_sent: 'Thank you for letting us know ♡',
+    next: 'next',
   },
   id: {
     tap: 'sentuh kompas untuk membuka',
@@ -86,27 +87,14 @@ const C = {
     rsend: 'Kirim konfirmasi',
     rsent: 'Sampai jumpa di hari bahagia ♡',
     rno_sent: 'Terima kasih telah memberi tahu kami ♡',
+    next: 'lanjut',
   },
 } as const;
 
 type Lang = keyof typeof C;
+type CardProps = { c: typeof C[Lang]; onNext: () => void };
 
 // ── Hooks ───────────────────────────────────────────────────────────────────
-
-function useReveal(threshold = 0.16) {
-  const ref = useRef<HTMLElement>(null);
-  const [visible, setVisible] = useState(false);
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    const obs = new IntersectionObserver(([e]) => {
-      if (e.isIntersecting) { setVisible(true); obs.disconnect(); }
-    }, { threshold });
-    obs.observe(el);
-    return () => obs.disconnect();
-  }, [threshold]);
-  return [ref, visible] as const;
-}
 
 function useAudio(started: boolean) {
   const ref = useRef<HTMLAudioElement>(null);
@@ -222,12 +210,30 @@ function Splash({ c, onOpen }: { c: typeof C[Lang]; onOpen: () => void }) {
   );
 }
 
+// ── Progress dots ─────────────────────────────────────────────────────────────
+
+const TOTAL_CARDS = 6;
+
+function Progress({ current, onGo }: { current: number; onGo: (i: number) => void }) {
+  return (
+    <div className="bd-progress">
+      {Array.from({ length: TOTAL_CARDS }, (_, i) => (
+        <button
+          key={i}
+          className={`bd-dot${current === i ? ' bd-dot-active' : ''}`}
+          onClick={(e) => { e.stopPropagation(); onGo(i); }}
+          aria-label={`Go to section ${i + 1}`}
+        />
+      ))}
+    </div>
+  );
+}
+
 // ── Cards ─────────────────────────────────────────────────────────────────────
 
-function HeroCard({ c }: { c: typeof C[Lang] }) {
-  const [ref, visible] = useReveal(0.1);
+function HeroCard({ c, onNext }: CardProps) {
   return (
-    <section ref={ref} className={`bd-card bd-hero-card bd-reveal${visible ? ' bd-in' : ''}`}>
+    <section className="bd-card bd-hero-card" onClick={onNext}>
       <p className="bd-kicker">{c.kicker}</p>
       <div className="bd-hero-names">
         <div className="bd-name-block">
@@ -244,10 +250,9 @@ function HeroCard({ c }: { c: typeof C[Lang] }) {
   );
 }
 
-function StoryCard({ c }: { c: typeof C[Lang] }) {
-  const [ref, visible] = useReveal();
+function StoryCard({ c, onNext }: CardProps) {
   return (
-    <section ref={ref} className={`bd-card bd-story-card bd-reveal${visible ? ' bd-in' : ''}`}>
+    <section className="bd-card bd-story-card" onClick={onNext}>
       <p className="bd-kicker">{c.sl}</p>
       <h2 className="bd-card-title">{c.st}</h2>
       <div className="bd-copy">
@@ -257,13 +262,12 @@ function StoryCard({ c }: { c: typeof C[Lang] }) {
   );
 }
 
-function DateCard({ c }: { c: typeof C[Lang] }) {
-  const [ref, visible] = useReveal();
+function DateCard({ c, onNext }: CardProps) {
   const googleUrl = 'https://calendar.google.com/calendar/render?action=TEMPLATE&text=Taslia%20%26%20Varian%20Wedding%20Ceremony&dates=20260604T100000/20260604T120000&ctz=Asia%2FJakarta&location=Beulangong%20Raja%20Resto%20%26%20Garden%2C%20Aceh%2C%20Indonesia';
   const [timeNum, ...timeRest] = c.time.split(' ');
   const timeLabel = timeRest.join(' ');
   return (
-    <section ref={ref} className={`bd-card bd-date-card bd-reveal${visible ? ' bd-in' : ''}`}>
+    <section className="bd-card bd-date-card" onClick={onNext}>
       <p className="bd-kicker">{c.save}</p>
       <div className="bd-date-num">04</div>
       <div className="bd-date-row">
@@ -273,7 +277,7 @@ function DateCard({ c }: { c: typeof C[Lang] }) {
       <div className="bd-date-num bd-date-time">{timeNum}</div>
       <p className="bd-date-unit">{timeLabel}</p>
       <p className="bd-location">{c.location}</p>
-      <div className="bd-actions">
+      <div className="bd-actions" onClick={e => e.stopPropagation()}>
         <a className="bd-btn" href="/taslia-varian-wedding.ics" download>{c.dlCal}</a>
         <a className="bd-btn bd-btn-ghost" href={googleUrl} target="_blank" rel="noreferrer">{c.gCal}</a>
       </div>
@@ -281,15 +285,14 @@ function DateCard({ c }: { c: typeof C[Lang] }) {
   );
 }
 
-function MapCard({ c }: { c: typeof C[Lang] }) {
-  const [ref, visible] = useReveal();
+function MapCard({ c, onNext }: CardProps) {
   const mapsUrl = 'https://www.google.com/maps/search/?api=1&query=5.4837634,95.2545945';
   return (
-    <section ref={ref} className={`bd-card bd-map-card bd-reveal${visible ? ' bd-in' : ''}`}>
+    <section className="bd-card bd-map-card" onClick={onNext}>
       <p className="bd-kicker">{c.mapTitle}</p>
       <h2 className="bd-card-title">{c.venue}</h2>
       <p className="bd-location">{c.location}</p>
-      <a className="bd-btn" href={mapsUrl} target="_blank" rel="noreferrer">{c.openMap}</a>
+      <a className="bd-btn" href={mapsUrl} target="_blank" rel="noreferrer" onClick={e => e.stopPropagation()}>{c.openMap}</a>
     </section>
   );
 }
@@ -297,8 +300,7 @@ function MapCard({ c }: { c: typeof C[Lang] }) {
 const STATICFORMS_KEY = 'sf_a03693328f8cd7e352782578';
 const TURNSTILE_SITE_KEY = '0x4AAAAAADTKPMeFIbNG0Qty';
 
-function RsvpCard({ c }: { c: typeof C[Lang] }) {
-  const [ref, visible] = useReveal();
+function RsvpCard({ c, onNext }: CardProps) {
   const [attending, setAttending] = useState<'yes' | 'no' | null>(null);
   const [status, setStatus] = useState<'idle' | 'sending' | 'done'>('idle');
   const [token, setToken] = useState<string | null>(null);
@@ -330,11 +332,14 @@ function RsvpCard({ c }: { c: typeof C[Lang] }) {
   const thanksMsg = attending === 'no' ? c.rno_sent : c.rsent;
 
   return (
-    <section ref={ref} className={`bd-card bd-wishes-card bd-reveal${visible ? ' bd-in' : ''}`}>
+    <section className="bd-card bd-wishes-card">
       <p className="bd-kicker">{c.rl}</p>
       {status !== 'done' && <h2 className="bd-card-title">{c.rt}</h2>}
       {status === 'done' ? (
-        <p className="bd-thanks">{thanksMsg}</p>
+        <>
+          <p className="bd-thanks">{thanksMsg}</p>
+          <button className="bd-btn" style={{ marginTop: 24 }} onClick={onNext}>{c.next} →</button>
+        </>
       ) : (
         <form className="bd-form" onSubmit={handleSubmit}>
           <input type="text" name="name" placeholder={c.rname} required maxLength={80} />
@@ -370,10 +375,9 @@ function RsvpCard({ c }: { c: typeof C[Lang] }) {
 }
 
 function WishesCard({ c, lang }: { c: typeof C[Lang]; lang: Lang }) {
-  const [ref, visible] = useReveal();
   const [state, handleSubmit] = useForm('mrejzzzd');
   return (
-    <section ref={ref} className={`bd-card bd-wishes-card bd-reveal${visible ? ' bd-in' : ''}`}>
+    <section className="bd-card bd-wishes-card">
       <p className="bd-kicker">{c.wl}</p>
       <h2 className="bd-card-title">{c.wt}</h2>
       {state.succeeded ? (
@@ -390,6 +394,7 @@ function WishesCard({ c, lang }: { c: typeof C[Lang]; lang: Lang }) {
           </button>
         </form>
       )}
+      <p className="bd-footer-inline">Taslia &amp; Varian · MMXXVI</p>
     </section>
   );
 }
@@ -399,8 +404,21 @@ function WishesCard({ c, lang }: { c: typeof C[Lang]; lang: Lang }) {
 export default function BackdropInvitation() {
   const [lang, setLang] = useState<Lang>('id');
   const [opened, setOpened] = useState(false);
+  const [card, setCard] = useState(0);
   const { ref: audioRef } = useAudio(opened);
   const c = C[lang];
+
+  const next = () => setCard(i => Math.min(i + 1, TOTAL_CARDS - 1));
+  const goTo = (i: number) => setCard(i);
+
+  const cards = [
+    <HeroCard c={c} onNext={next} />,
+    <StoryCard c={c} onNext={next} />,
+    <DateCard c={c} onNext={next} />,
+    <MapCard c={c} onNext={next} />,
+    <RsvpCard c={c} onNext={next} />,
+    <WishesCard c={c} lang={lang} />,
+  ];
 
   return (
     <div className="bd-root">
@@ -416,15 +434,16 @@ export default function BackdropInvitation() {
 
       <Splash c={c} onOpen={() => setOpened(true)} />
 
-      <main className={`bd-content${opened ? ' bd-content-in' : ''}`}>
-        <HeroCard c={c} />
-        <StoryCard c={c} />
-        <DateCard c={c} />
-        <MapCard c={c} />
-        <RsvpCard c={c} />
-        <WishesCard c={c} lang={lang} />
-        <footer className="bd-footer">Taslia &amp; Varian · MMXXVI</footer>
-      </main>
+      {opened && (
+        <main className="bd-content bd-content-in">
+          {cards.map((cardEl, i) => (
+            <div key={i} className={`bd-card-slot${card === i ? ' bd-slot-active' : ''}`}>
+              {cardEl}
+            </div>
+          ))}
+          <Progress current={card} onGo={goTo} />
+        </main>
+      )}
     </div>
   );
 }
