@@ -35,6 +35,15 @@ const C = {
     send: 'Send wishes',
     sent: 'Thank you for the wish ♡',
     music: 'music',
+    rl: 'RSVP',
+    rt: 'Will you be joining us?',
+    rname: 'Your name',
+    ryes: 'Yes, I will attend',
+    rno: 'Sorry, I cannot attend',
+    rguests: 'Number of guests (including yourself)',
+    rsend: 'Send RSVP',
+    rsent: 'See you on the day ♡',
+    rno_sent: 'Thank you for letting us know ♡',
   },
   id: {
     tap: 'sentuh kompas untuk membuka',
@@ -67,6 +76,15 @@ const C = {
     send: 'Kirim ucapan',
     sent: 'Terima kasih ♡',
     music: 'musik',
+    rl: 'Konfirmasi Kehadiran',
+    rt: 'Apakah Anda dapat hadir?',
+    rname: 'Nama Anda',
+    ryes: 'Ya, saya akan hadir',
+    rno: 'Maaf, saya tidak dapat hadir',
+    rguests: 'Jumlah tamu (termasuk Anda)',
+    rsend: 'Kirim konfirmasi',
+    rsent: 'Sampai jumpa di hari bahagia ♡',
+    rno_sent: 'Terima kasih telah memberi tahu kami ♡',
   },
 } as const;
 
@@ -274,6 +292,66 @@ function MapCard({ c }: { c: typeof C[Lang] }) {
   );
 }
 
+const STATICFORMS_KEY = 'sf_a03693328f8cd7e352782578';
+
+function RsvpCard({ c }: { c: typeof C[Lang] }) {
+  const [ref, visible] = useReveal();
+  const [attending, setAttending] = useState<'yes' | 'no' | null>(null);
+  const [status, setStatus] = useState<'idle' | 'sending' | 'done'>('idle');
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setStatus('sending');
+    const fd = new FormData(e.currentTarget);
+    const body = {
+      apiKey: STATICFORMS_KEY,
+      subject: 'Wedding RSVP',
+      name: fd.get('name'),
+      message: `Attendance: ${fd.get('attendance')}${fd.get('guests') ? ` | Guests: ${fd.get('guests')}` : ''}`,
+    };
+    try {
+      await fetch('https://api.staticforms.dev/submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+      });
+    } catch {}
+    setStatus('done');
+  };
+
+  const thanksMsg = attending === 'no' ? c.rno_sent : c.rsent;
+
+  return (
+    <section ref={ref} className={`bd-card bd-wishes-card bd-reveal${visible ? ' bd-in' : ''}`}>
+      <p className="bd-kicker">{c.rl}</p>
+      <h2 className="bd-card-title">{c.rt}</h2>
+      {status === 'done' ? (
+        <p className="bd-thanks">{thanksMsg}</p>
+      ) : (
+        <form className="bd-form" onSubmit={handleSubmit}>
+          <input type="text" name="name" placeholder={c.rname} required maxLength={80} />
+          <div className="bd-radio-group">
+            <label className={`bd-radio${attending === 'yes' ? ' bd-radio-on' : ''}`}>
+              <input type="radio" name="attendance" value="yes" required onChange={() => setAttending('yes')} />
+              {c.ryes}
+            </label>
+            <label className={`bd-radio${attending === 'no' ? ' bd-radio-on' : ''}`}>
+              <input type="radio" name="attendance" value="no" onChange={() => setAttending('no')} />
+              {c.rno}
+            </label>
+          </div>
+          {attending === 'yes' && (
+            <input type="number" name="guests" min={1} max={10} defaultValue={1} placeholder={c.rguests} />
+          )}
+          <button type="submit" className="bd-btn" disabled={status === 'sending'}>
+            {status === 'sending' ? '···' : c.rsend}
+          </button>
+        </form>
+      )}
+    </section>
+  );
+}
+
 function WishesCard({ c, lang }: { c: typeof C[Lang]; lang: Lang }) {
   const [ref, visible] = useReveal();
   const [state, handleSubmit] = useForm('mrejzzzd');
@@ -326,6 +404,7 @@ export default function BackdropInvitation() {
         <StoryCard c={c} />
         <DateCard c={c} />
         <MapCard c={c} />
+        <RsvpCard c={c} />
         <WishesCard c={c} lang={lang} />
         <footer className="bd-footer">Taslia &amp; Varian · MMXXVI</footer>
       </main>
