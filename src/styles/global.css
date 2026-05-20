@@ -367,13 +367,14 @@ html.bd-page body {
 
 .bd-date-card .bd-time {
   font-family: 'Cormorant Garamond', serif;
-  font-size: clamp(76px, calc(var(--bd-frame-width) * 0.23), 104px);
+  font-size: clamp(26px, calc(var(--bd-frame-width) * 0.09), 42px);
   font-weight: 400;
-  line-height: 0.85;
+  line-height: 1;
   color: var(--bd-sage);
-  letter-spacing: 0.04em;
-  margin-top: 4px;
+  letter-spacing: 0.06em;
+  margin-top: 8px;
   opacity: 1;
+  text-transform: uppercase;
 }
 
 .bd-map-card .bd-card-title {
@@ -662,7 +663,7 @@ html.bd-page body {
   }
 
   .bd-name-block h2 {
-    font-size: clamp(15px, 4.8vw, 19px);
+    font-size: clamp(13px, 4.0vw, 17px);
   }
 
   .bd-name-block p {
@@ -697,9 +698,6 @@ html.bd-page body {
     line-height: 1.38;
   }
 
-  .bd-date-card .bd-time {
-    font-size: clamp(56px, 17vw, 80px);
-  }
 }
 
 @media (min-width: 900px) {
