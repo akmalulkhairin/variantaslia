@@ -331,7 +331,7 @@ function RsvpCard({ c }: { c: typeof C[Lang] }) {
   return (
     <section ref={ref} className={`bd-card bd-wishes-card bd-reveal${visible ? ' bd-in' : ''}`}>
       <p className="bd-kicker">{c.rl}</p>
-      <h2 className="bd-card-title">{c.rt}</h2>
+      {status !== 'done' && <h2 className="bd-card-title">{c.rt}</h2>}
       {status === 'done' ? (
         <p className="bd-thanks">{thanksMsg}</p>
       ) : (
