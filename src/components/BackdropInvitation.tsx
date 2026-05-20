@@ -351,13 +351,15 @@ function RsvpCard({ c }: { c: typeof C[Lang] }) {
           {attending === 'yes' && (
             <input type="number" name="guests" min={1} max={10} defaultValue={1} placeholder={c.rguests} />
           )}
-          <Turnstile
-            ref={turnstileRef}
-            siteKey={TURNSTILE_SITE_KEY}
-            onSuccess={setToken}
-            onExpire={() => setToken(null)}
-            options={{ theme: 'light', appearance: 'interaction-only' }}
-          />
+          <div style={{ position: 'fixed', bottom: -200, left: -200, pointerEvents: 'none', opacity: 0 }}>
+            <Turnstile
+              ref={turnstileRef}
+              siteKey={TURNSTILE_SITE_KEY}
+              onSuccess={setToken}
+              onExpire={() => setToken(null)}
+              options={{ theme: 'light', appearance: 'execute' }}
+            />
+          </div>
           <button type="submit" className="bd-btn" disabled={status === 'sending' || !token}>
             {status === 'sending' ? '···' : c.rsend}
           </button>
