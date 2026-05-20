@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { useForm, ValidationError } from '@formspree/react';
+import { Turnstile } from '@marsidev/react-turnstile';
 
 // ── Copy ────────────────────────────────────────────────────────────────────
 
@@ -293,14 +294,18 @@ function MapCard({ c }: { c: typeof C[Lang] }) {
 }
 
 const STATICFORMS_KEY = 'sf_a03693328f8cd7e352782578';
+const TURNSTILE_SITE_KEY = '0x4AAAAAADTKPMeFIbNG0Qty';
 
 function RsvpCard({ c }: { c: typeof C[Lang] }) {
   const [ref, visible] = useReveal();
   const [attending, setAttending] = useState<'yes' | 'no' | null>(null);
   const [status, setStatus] = useState<'idle' | 'sending' | 'done'>('idle');
+  const [token, setToken] = useState<string | null>(null);
+  const turnstileRef = useRef<{ reset: () => void }>(null);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (!token) return;
     setStatus('sending');
     const fd = new FormData(e.currentTarget);
     const body = {
@@ -308,6 +313,7 @@ function RsvpCard({ c }: { c: typeof C[Lang] }) {
       subject: 'Wedding RSVP',
       name: fd.get('name'),
       message: `Attendance: ${fd.get('attendance')}${fd.get('guests') ? ` | Guests: ${fd.get('guests')}` : ''}`,
+      'cf-turnstile-response': token,
     };
     try {
       await fetch('https://api.staticforms.dev/submit', {
@@ -317,6 +323,7 @@ function RsvpCard({ c }: { c: typeof C[Lang] }) {
       });
     } catch {}
     setStatus('done');
+    turnstileRef.current?.reset();
   };
 
   const thanksMsg = attending === 'no' ? c.rno_sent : c.rsent;
@@ -343,7 +350,14 @@ function RsvpCard({ c }: { c: typeof C[Lang] }) {
           {attending === 'yes' && (
             <input type="number" name="guests" min={1} max={10} defaultValue={1} placeholder={c.rguests} />
           )}
-          <button type="submit" className="bd-btn" disabled={status === 'sending'}>
+          <Turnstile
+            ref={turnstileRef}
+            siteKey={TURNSTILE_SITE_KEY}
+            onSuccess={setToken}
+            onExpire={() => setToken(null)}
+            options={{ theme: 'light', size: 'flexible' }}
+          />
+          <button type="submit" className="bd-btn" disabled={status === 'sending' || !token}>
             {status === 'sending' ? '···' : c.rsend}
           </button>
         </form>
