@@ -299,7 +299,7 @@ function RsvpCard({ c, onNext }: CardProps) {
   };
 
   return (
-    <section className="bd-card bd-wishes-card">
+    <section className="bd-card bd-rsvp-card">
       <p className="bd-kicker">{c.rl}</p>
       {status !== 'done' && <h2 className="bd-card-title">{c.rt}</h2>}
       {status === 'done' ? (

@@ -744,6 +744,42 @@ html.bd-page body {
     line-height: 1.38;
   }
 
+  /* RSVP compact — fit form inside arch like hero card */
+  .bd-rsvp-card .bd-card-title {
+    font-size: clamp(20px, 5.6vw, 24px);
+    line-height: 1.15;
+    margin-bottom: 4px;
+  }
+
+  .bd-rsvp-card .bd-form {
+    gap: 8px;
+    margin-top: 10px;
+  }
+
+  .bd-rsvp-card .bd-form input,
+  .bd-rsvp-card .bd-form textarea {
+    padding: 10px 12px;
+    font-size: 13px;
+  }
+
+  .bd-rsvp-card .bd-radio {
+    padding: 10px 14px;
+    font-size: 13px;
+  }
+
+  .bd-rsvp-card .bd-radio-group {
+    gap: 6px;
+  }
+
+  .bd-rsvp-card .bd-btn {
+    margin-top: 4px;
+  }
+
+  /* Tighter top/bottom padding for tall content cards */
+  .bd-content .bd-rsvp-card,
+  .bd-content .bd-wishes-card {
+    padding: 24px 0 40px;
+  }
 }
 
 @media (min-width: 900px) {
