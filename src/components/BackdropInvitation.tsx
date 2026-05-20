@@ -356,7 +356,7 @@ function RsvpCard({ c }: { c: typeof C[Lang] }) {
             siteKey={TURNSTILE_SITE_KEY}
             onSuccess={setToken}
             onExpire={() => setToken(null)}
-            options={{ theme: 'light', size: 'flexible' }}
+            options={{ theme: 'light', appearance: 'interaction-only' }}
           />
           <button type="submit" className="bd-btn" disabled={status === 'sending' || !token}>
             {status === 'sending' ? '···' : c.rsend}
