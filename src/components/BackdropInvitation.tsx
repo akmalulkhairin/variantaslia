@@ -9,14 +9,14 @@ const C = {
     tap: 'tap the compass to open',
     kicker: 'Wedding Ceremony',
     date: '04 · June · 2026',
-    time: '10.00 AM',
+    time: '10.00 AM · Until End',
     open: 'Open Invitation',
     brideParents: 'second daughter of Mr. Ir. Nazaruddin\nand Mrs. Dra. Cut Kemalawati',
     groomParents: 'first son of Mr. Sainur Arif\nand Mrs. Dian Indonesiana',
     sl: 'Our Story',
     st: 'Far from home,\nclose to each other',
     sb: [
-      'Taslia is from Aceh. Varian is from Bukittinggi, in the highlands of West Sumatra.',
+      'Taslia is from Banda Aceh, Aceh. Varian is from Bukittinggi, in the highlands of West Sumatra.',
       'They were far from home when they found each other at Leibniz Universität in Hannover, Germany.',
       'In a city of rain and old streets, a quiet crossing became a promise to return home together.',
     ],
@@ -50,14 +50,14 @@ const C = {
     tap: 'sentuh kompas untuk membuka',
     kicker: 'Undangan Akad Pernikahan',
     date: '04 · Juni · 2026',
-    time: '10.00 WIB',
+    time: '10.00 WIB · Selesai',
     open: 'Buka Undangan',
     brideParents: 'anak ketiga dari Bpk Ir. Nazaruddin\ndan Ibu Dra. Cut Kemalawati',
     groomParents: 'anak pertama dari Bpk Sainur Arif\ndan Ibu Dian Indonesiana',
     sl: 'Cerita Kami',
     st: 'Di tanah rantau,\nhati yang saling menemukan',
     sb: [
-      'Taslia berasal dari Aceh. Varian dari Bukittinggi, Sumatera Barat.',
+      'Taslia berasal dari Banda Aceh, Aceh. Varian dari Bukittinggi, Sumatera Barat.',
       'Di perantauan, takdir mempertemukan mereka di Leibniz Universität, Hannover, Jerman.',
       'Di kota hujan dan jalan-jalan tua, pertemuan sederhana tumbuh menjadi janji untuk pulang bersama.',
     ],
@@ -260,6 +260,8 @@ function StoryCard({ c }: { c: typeof C[Lang] }) {
 function DateCard({ c }: { c: typeof C[Lang] }) {
   const [ref, visible] = useReveal();
   const googleUrl = 'https://calendar.google.com/calendar/render?action=TEMPLATE&text=Taslia%20%26%20Varian%20Wedding%20Ceremony&dates=20260604T100000/20260604T120000&ctz=Asia%2FJakarta&location=Beulangong%20Raja%20Resto%20%26%20Garden%2C%20Aceh%2C%20Indonesia';
+  const [timeNum, ...timeRest] = c.time.split(' ');
+  const timeLabel = timeRest.join(' ');
   return (
     <section ref={ref} className={`bd-card bd-date-card bd-reveal${visible ? ' bd-in' : ''}`}>
       <p className="bd-kicker">{c.save}</p>
@@ -268,7 +270,8 @@ function DateCard({ c }: { c: typeof C[Lang] }) {
         <span>{c.date.split('·')[1].trim()}</span>
         <span>2026</span>
       </div>
-      <p className="bd-time">{c.time}</p>
+      <div className="bd-date-num bd-date-time">{timeNum}</div>
+      <p className="bd-date-unit">{timeLabel}</p>
       <p className="bd-location">{c.location}</p>
       <div className="bd-actions">
         <a className="bd-btn" href="/taslia-varian-wedding.ics" download>{c.dlCal}</a>
