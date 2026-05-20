@@ -10,7 +10,6 @@ const C = {
     kicker: 'Wedding Ceremony',
     date: '04 · June · 2026',
     time: '10.00 AM · Until End',
-    open: 'Open Invitation',
     brideParents: 'second daughter of Mr. Ir. Nazaruddin\nand Mrs. Dra. Cut Kemalawati',
     groomParents: 'first son of Mr. Sainur Arif\nand Mrs. Dian Indonesiana',
     sl: 'Our Story',
@@ -20,8 +19,6 @@ const C = {
       'They were far from home when they found each other at Leibniz Universität in Hannover, Germany.',
       'In a city of rain and old streets, a quiet crossing became a promise to return home together.',
     ],
-    together: 'Together with their families',
-    celebrate: 'invite you to celebrate their wedding',
     save: 'Save the Date',
     location: 'Aceh Besar, Indonesia',
     venue: 'Beulangong Raja\nResto & Garden',
@@ -52,7 +49,6 @@ const C = {
     kicker: 'Undangan Akad Pernikahan',
     date: '04 · Juni · 2026',
     time: '10.00 WIB · Selesai',
-    open: 'Buka Undangan',
     brideParents: 'anak ketiga dari Bpk Ir. Nazaruddin\ndan Ibu Dra. Cut Kemalawati',
     groomParents: 'anak pertama dari Bpk Sainur Arif\ndan Ibu Dian Indonesiana',
     sl: 'Cerita Kami',
@@ -62,8 +58,6 @@ const C = {
       'Di perantauan, takdir mempertemukan mereka di Leibniz Universität, Hannover, Jerman.',
       'Di kota hujan dan jalan-jalan tua, pertemuan sederhana tumbuh menjadi janji untuk pulang bersama.',
     ],
-    together: 'Bersama kedua keluarga',
-    celebrate: 'mengundang Anda untuk hadir merayakan pernikahan mereka',
     save: 'Tandai Tanggalnya',
     location: 'Aceh Besar, Indonesia',
     venue: 'Beulangong Raja\nResto & Garden',
@@ -93,6 +87,8 @@ const C = {
 
 type Lang = keyof typeof C;
 type CardProps = { c: typeof C[Lang]; onNext: () => void };
+
+const TOTAL_CARDS = 6;
 
 // ── Hooks ───────────────────────────────────────────────────────────────────
 
@@ -129,20 +125,13 @@ function AudioButton({ started, audioRef }: { started: boolean; audioRef: React.
     else { a.play().catch(() => {}); setPlaying(true); }
   };
   return (
-    <button
-      className={`audio-btn${started ? ' show' : ''}${playing ? ' playing' : ''}`}
-      onClick={toggle}
-      aria-label={playing ? 'Pause music' : 'Play music'}
-    >
+    <button className={`audio-btn${started ? ' show' : ''}${playing ? ' playing' : ''}`}
+      onClick={toggle} aria-label={playing ? 'Pause music' : 'Play music'}>
       <div className="audio-ring">
         <div className="audio-icon">
-          {playing ? (
-            <span className="audio-waves">
-              <span className="aw" /><span className="aw" /><span className="aw" />
-            </span>
-          ) : (
-            <span className="audio-pause-icon" />
-          )}
+          {playing
+            ? <span className="audio-waves"><span className="aw" /><span className="aw" /><span className="aw" /></span>
+            : <span className="audio-pause-icon" />}
         </div>
       </div>
       <span className="audio-label">music</span>
@@ -159,13 +148,10 @@ function Compass() {
         <circle cx="110" cy="110" r="94" stroke="rgba(107,127,94,0.32)" strokeWidth="1" />
         <circle cx="110" cy="110" r="82" stroke="rgba(107,127,94,0.14)" strokeWidth="1" strokeDasharray="3 7" />
         <circle cx="110" cy="110" r="58" stroke="rgba(107,127,94,0.10)" strokeWidth="1" />
-        {[0, 30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330].map(a => (
+        {[0,30,60,90,120,150,180,210,240,270,300,330].map(a => (
           <g key={a} transform={`rotate(${a},110,110)`}>
-            <line
-              x1="110" y1="16" x2="110" y2={a % 90 === 0 ? 29 : 24}
-              stroke="rgba(107,127,94,0.5)"
-              strokeWidth={a % 90 === 0 ? 1.1 : 0.7}
-            />
+            <line x1="110" y1="16" x2="110" y2={a % 90 === 0 ? 29 : 24}
+              stroke="rgba(107,127,94,0.5)" strokeWidth={a % 90 === 0 ? 1.1 : 0.7} />
           </g>
         ))}
       </svg>
@@ -179,29 +165,16 @@ function Compass() {
 function Splash({ c, onOpen }: { c: typeof C[Lang]; onOpen: () => void }) {
   const [out, setOut] = useState(false);
   const [gone, setGone] = useState(false);
-
   const open = () => {
     if (out) return;
-    setOut(true);
-    onOpen();
+    setOut(true); onOpen();
     setTimeout(() => setGone(true), 900);
   };
-
   if (gone) return null;
   return (
-    <div
-      className={`bd-splash${out ? ' bd-splash-out' : ''}`}
-      onClick={open}
-      role="button"
-      tabIndex={0}
-      aria-label="Open invitation"
-      onKeyDown={(event) => {
-        if (event.key === 'Enter' || event.key === ' ') {
-          event.preventDefault();
-          open();
-        }
-      }}
-    >
+    <div className={`bd-splash${out ? ' bd-splash-out' : ''}`} onClick={open}
+      role="button" tabIndex={0} aria-label="Open invitation"
+      onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(); } }}>
       <div className="bd-splash-card">
         <Compass />
         <p className="bd-tap-hint">{c.tap}</p>
@@ -212,18 +185,13 @@ function Splash({ c, onOpen }: { c: typeof C[Lang]; onOpen: () => void }) {
 
 // ── Progress dots ─────────────────────────────────────────────────────────────
 
-const TOTAL_CARDS = 6;
-
 function Progress({ current, onGo }: { current: number; onGo: (i: number) => void }) {
   return (
     <div className="bd-progress">
       {Array.from({ length: TOTAL_CARDS }, (_, i) => (
-        <button
-          key={i}
-          className={`bd-dot${current === i ? ' bd-dot-active' : ''}`}
-          onClick={(e) => { e.stopPropagation(); onGo(i); }}
-          aria-label={`Go to section ${i + 1}`}
-        />
+        <button key={i} className={`bd-dot${current === i ? ' bd-dot-active' : ''}`}
+          onClick={e => { e.stopPropagation(); onGo(i); }}
+          aria-label={`Section ${i + 1}`} />
       ))}
     </div>
   );
@@ -292,7 +260,8 @@ function MapCard({ c, onNext }: CardProps) {
       <p className="bd-kicker">{c.mapTitle}</p>
       <h2 className="bd-card-title">{c.venue}</h2>
       <p className="bd-location">{c.location}</p>
-      <a className="bd-btn" href={mapsUrl} target="_blank" rel="noreferrer" onClick={e => e.stopPropagation()}>{c.openMap}</a>
+      <a className="bd-btn" href={mapsUrl} target="_blank" rel="noreferrer"
+        onClick={e => e.stopPropagation()}>{c.openMap}</a>
     </section>
   );
 }
@@ -329,16 +298,14 @@ function RsvpCard({ c, onNext }: CardProps) {
     turnstileRef.current?.reset();
   };
 
-  const thanksMsg = attending === 'no' ? c.rno_sent : c.rsent;
-
   return (
     <section className="bd-card bd-wishes-card">
       <p className="bd-kicker">{c.rl}</p>
       {status !== 'done' && <h2 className="bd-card-title">{c.rt}</h2>}
       {status === 'done' ? (
         <>
-          <p className="bd-thanks">{thanksMsg}</p>
-          <button className="bd-btn" style={{ marginTop: 24 }} onClick={onNext}>{c.next} →</button>
+          <p className="bd-thanks">{attending === 'no' ? c.rno_sent : c.rsent}</p>
+          <button className="bd-btn" style={{ marginTop: 20 }} onClick={onNext}>{c.next} →</button>
         </>
       ) : (
         <form className="bd-form" onSubmit={handleSubmit}>
@@ -357,13 +324,9 @@ function RsvpCard({ c, onNext }: CardProps) {
             <input type="number" name="guests" min={1} max={10} defaultValue={1} placeholder={c.rguests} />
           )}
           <div style={{ position: 'fixed', bottom: -200, left: -200, pointerEvents: 'none', opacity: 0 }}>
-            <Turnstile
-              ref={turnstileRef}
-              siteKey={TURNSTILE_SITE_KEY}
-              onSuccess={setToken}
-              onExpire={() => setToken(null)}
-              options={{ theme: 'light', appearance: 'execute' }}
-            />
+            <Turnstile ref={turnstileRef} siteKey={TURNSTILE_SITE_KEY}
+              onSuccess={setToken} onExpire={() => setToken(null)}
+              options={{ theme: 'light', appearance: 'execute' }} />
           </div>
           <button type="submit" className="bd-btn" disabled={status === 'sending' || !token}>
             {status === 'sending' ? '···' : c.rsend}
@@ -387,7 +350,7 @@ function WishesCard({ c, lang }: { c: typeof C[Lang]; lang: Lang }) {
           <input type="hidden" name="lang" value={lang} />
           <input type="text" name="name" placeholder={c.name} required maxLength={80} />
           <ValidationError field="name" errors={state.errors} className="bd-err" />
-          <textarea name="message" placeholder={c.msg} required maxLength={400} rows={4} />
+          <textarea name="message" placeholder={c.msg} required maxLength={400} rows={3} />
           <ValidationError field="message" errors={state.errors} className="bd-err" />
           <button type="submit" className="bd-btn" disabled={state.submitting}>
             {state.submitting ? '···' : c.send}
@@ -407,9 +370,7 @@ export default function BackdropInvitation() {
   const [card, setCard] = useState(0);
   const { ref: audioRef } = useAudio(opened);
   const c = C[lang];
-
   const next = () => setCard(i => Math.min(i + 1, TOTAL_CARDS - 1));
-  const goTo = (i: number) => setCard(i);
 
   const cards = [
     <HeroCard c={c} onNext={next} />,
@@ -424,24 +385,18 @@ export default function BackdropInvitation() {
     <div className="bd-root">
       <audio ref={audioRef} src="/uploads/One Last Message.m4a" loop preload="auto" style={{ display: 'none' }} />
       <img src="/reference/main-backdrop.png" alt="" className="bd-bg" />
-
       <AudioButton started={opened} audioRef={audioRef} />
-
       <div className={`bd-lang${opened ? ' bd-lang-show' : ''}`}>
         <button className={`bd-lb${lang === 'en' ? ' bd-lb-on' : ''}`} onClick={() => setLang('en')}>EN</button>
         <button className={`bd-lb${lang === 'id' ? ' bd-lb-on' : ''}`} onClick={() => setLang('id')}>ID</button>
       </div>
-
       <Splash c={c} onOpen={() => setOpened(true)} />
-
       {opened && (
         <main className="bd-content bd-content-in">
-          {cards.map((cardEl, i) => (
-            <div key={i} className={`bd-card-slot${card === i ? ' bd-slot-active' : ''}`}>
-              {cardEl}
-            </div>
+          {cards.map((el, i) => (
+            <div key={i} className={`bd-card-slot${card === i ? ' bd-slot-active' : ''}`}>{el}</div>
           ))}
-          <Progress current={card} onGo={goTo} />
+          <Progress current={card} onGo={setCard} />
         </main>
       )}
     </div>
