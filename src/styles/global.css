@@ -17,12 +17,14 @@ body { background: var(--ink); color: var(--ink); font-family: 'Jost', sans-seri
 html.bd-page {
   height: 100%;
   overflow: hidden;
+  background: #f0ebe2;
 }
 
 html.bd-page body {
   height: 100%;
   overflow: hidden;
   overscroll-behavior-y: contain;
+  background: #f0ebe2;
 }
 
 .site {
@@ -36,11 +38,11 @@ html.bd-page body {
   --bd-sage:   #6b7f5e;
   --bd-paper:  rgba(255, 252, 248, 0.88);
   --bd-border: rgba(107, 127, 94, 0.18);
-  --bd-frame-width: 56.25dvh;
+  --bd-frame-width: 56.25svh;
   --bd-safe-width: min(310px, calc(var(--bd-frame-width) * 0.58));
   --bd-hero-safe-width: min(320px, calc(var(--bd-frame-width) * 0.60));
   --bd-copy-safe-width: min(290px, calc(var(--bd-frame-width) * 0.55));
-  height: 100dvh;
+  height: 100svh;
   overflow: hidden;
   background: #f0ebe2;
   color: var(--bd-ink);
@@ -76,7 +78,7 @@ html.bd-page body {
   top: 0;
   left: 50%;
   transform: translateX(-50%);
-  height: 100dvh;
+  height: 100lvh;
   width: auto;
   z-index: 0;
 }
@@ -179,7 +181,7 @@ html.bd-page body {
   position: fixed;
   inset: 0;
   z-index: 10;
-  height: 100dvh;
+  height: 100svh;
   overflow-x: hidden;
   overflow-y: auto;
   overscroll-behavior-y: contain;
@@ -197,9 +199,9 @@ html.bd-page body {
 
 /* Each card section fills the viewport so it always centres in the arch */
 .bd-content .bd-card {
-  height: 100dvh;
-  min-height: 100dvh;
-  flex: 0 0 100dvh;
+  height: 100svh;
+  min-height: 100svh;
+  flex: 0 0 100svh;
   display: flex;
   flex-direction: column;
   align-items: center;
