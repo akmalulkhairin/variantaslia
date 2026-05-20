@@ -11,8 +11,8 @@ const C = {
     date: '04 · June · 2026',
     time: '10.00 AM',
     open: 'Open Invitation',
-    brideParents: 'second daughter of Mr. Ir. Nazaruddin and Mrs. Dra. Cut Kemalawati',
-    groomParents: 'first son of Mr. Sainur Arif and Mrs. Dian Indonesiana',
+    brideParents: 'second daughter of Mr. Ir. Nazaruddin\nand Mrs. Dra. Cut Kemalawati',
+    groomParents: 'first son of Mr. Sainur Arif\nand Mrs. Dian Indonesiana',
     sl: 'Our Story',
     st: 'Far from home,\nclose to each other',
     sb: [
@@ -23,7 +23,7 @@ const C = {
     together: 'Together with their families',
     celebrate: 'invite you to celebrate their wedding',
     save: 'Save the Date',
-    location: 'Aceh · Indonesia',
+    location: 'Aceh Besar, Indonesia',
     venue: 'Beulangong Raja\nResto & Garden',
     mapTitle: 'Location',
     openMap: 'Open in Google Maps',
@@ -52,8 +52,8 @@ const C = {
     date: '04 · Juni · 2026',
     time: '10.00 WIB',
     open: 'Buka Undangan',
-    brideParents: 'anak ketiga dari Bpk Ir. Nazaruddin dan Ibu Dra. Cut Kemalawati',
-    groomParents: 'anak pertama dari Bpk Sainur Arif dan Ibu Dian Indonesiana',
+    brideParents: 'anak ketiga dari Bpk Ir. Nazaruddin\ndan Ibu Dra. Cut Kemalawati',
+    groomParents: 'anak pertama dari Bpk Sainur Arif\ndan Ibu Dian Indonesiana',
     sl: 'Cerita Kami',
     st: 'Di tanah rantau,\nhati yang saling menemukan',
     sb: [
@@ -64,7 +64,7 @@ const C = {
     together: 'Bersama kedua keluarga',
     celebrate: 'mengundang Anda untuk hadir merayakan pernikahan mereka',
     save: 'Tandai Tanggalnya',
-    location: 'Aceh · Indonesia',
+    location: 'Aceh Besar, Indonesia',
     venue: 'Beulangong Raja\nResto & Garden',
     mapTitle: 'Lokasi',
     openMap: 'Buka di Google Maps',
@@ -240,8 +240,6 @@ function HeroCard({ c }: { c: typeof C[Lang] }) {
           <p>{c.groomParents}</p>
         </div>
       </div>
-      <p className="bd-sub">{c.date}</p>
-      <p className="bd-time">{c.time}</p>
     </section>
   );
 }
