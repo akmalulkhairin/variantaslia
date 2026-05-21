@@ -181,8 +181,17 @@ html.bd-page body {
   position: fixed;
   inset: 0;
   z-index: 10;
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: auto;
   pointer-events: none;
+  scroll-snap-type: y mandatory;
+  scroll-behavior: smooth;
+  overscroll-behavior-y: contain;
+  scrollbar-width: none;
+}
+
+.bd-content::-webkit-scrollbar {
+  display: none;
 }
 
 .bd-content-in {
@@ -190,18 +199,12 @@ html.bd-page body {
 }
 
 .bd-card-slot {
-  position: absolute;
-  inset: 0;
+  min-height: 100svh;
   display: flex;
   align-items: center;
   justify-content: center;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.5s ease;
-}
-
-.bd-card-slot.bd-slot-active {
-  opacity: 1;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
   pointer-events: auto;
 }
 

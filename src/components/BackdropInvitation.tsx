@@ -414,9 +414,27 @@ export default function BackdropInvitation() {
   const [lang, setLang] = useState<Lang>('id');
   const [opened, setOpened] = useState(false);
   const [card, setCard] = useState(0);
+  const contentRef = useRef<HTMLElement>(null);
   const { ref: audioRef } = useAudio(opened);
   const c = C[lang];
-  const next = () => setCard(i => Math.min(i + 1, TOTAL_CARDS - 1));
+  const goTo = (i: number) => {
+    const target = Math.max(0, Math.min(i, TOTAL_CARDS - 1));
+    const container = contentRef.current;
+    if (!container) {
+      setCard(target);
+      return;
+    }
+    container.scrollTo({ top: target * container.clientHeight, behavior: 'smooth' });
+    setCard(target);
+  };
+  const next = () => goTo(card + 1);
+
+  const handleScroll = () => {
+    const container = contentRef.current;
+    if (!container) return;
+    const current = Math.round(container.scrollTop / container.clientHeight);
+    setCard(Math.max(0, Math.min(current, TOTAL_CARDS - 1)));
+  };
 
   const cards = [
     <HeroCard c={c} onNext={next} />,
@@ -438,11 +456,11 @@ export default function BackdropInvitation() {
       </div>
       <Splash c={c} onOpen={() => setOpened(true)} />
       {opened && (
-        <main className="bd-content bd-content-in">
+        <main ref={contentRef} className="bd-content bd-content-in" onScroll={handleScroll}>
           {cards.map((el, i) => (
-            <div key={i} className={`bd-card-slot${card === i ? ' bd-slot-active' : ''}`}>{el}</div>
+            <div key={i} className="bd-card-slot">{el}</div>
           ))}
-          <Progress current={card} onGo={setCard} />
+          <Progress current={card} onGo={goTo} />
         </main>
       )}
     </div>
