@@ -13,7 +13,6 @@
   },
   "dependencies": {
     "@astrojs/react": "^5.0.4",
-    "@formspree/react": "^3.0.0",
     "@marsidev/react-turnstile": "^1.5.2",
     "astro": "^6.1.10",
     "framer-motion": "^12.38.0",

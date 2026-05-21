@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
-import { useForm, ValidationError } from '@formspree/react';
 import { Turnstile } from '@marsidev/react-turnstile';
+import type { TurnstileInstance } from '@marsidev/react-turnstile';
 
 // ── Copy ────────────────────────────────────────────────────────────────────
 
@@ -31,7 +31,9 @@ const C = {
     name: 'Your name',
     msg: 'Your message',
     send: 'Send wishes',
+    sending: 'Sending wishes',
     sent: 'Thank you for the wish ♡',
+    failed: 'Something went wrong. Please try again.',
     music: 'music',
     rl: 'Will you join us?',
     rt: 'Will you join us?',
@@ -71,7 +73,9 @@ const C = {
     name: 'Nama Anda',
     msg: 'Pesan Anda',
     send: 'Kirim ucapan',
+    sending: 'Mengirim ucapan',
     sent: 'Terima kasih ♡',
+    failed: 'Maaf, terjadi kendala. Silakan coba lagi.',
     music: 'musik',
     rl: 'Apakah Anda berkenan hadir?',
     rt: 'Apakah Anda berkenan hadir?',
@@ -268,14 +272,13 @@ function MapCard({ c, onNext }: CardProps) {
   );
 }
 
-const STATICFORMS_KEY = 'sf_a03693328f8cd7e352782578';
-const TURNSTILE_SITE_KEY = '0x4AAAAAADTKPMeFIbNG0Qty';
+const TURNSTILE_SITE_KEY = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY || '0x4AAAAAADTKPMeFIbNG0Qty';
 
 function RsvpCard({ c, onNext }: CardProps) {
   const [attending, setAttending] = useState<'yes' | 'no' | null>(null);
-  const [status, setStatus] = useState<'idle' | 'sending' | 'done'>('idle');
+  const [status, setStatus] = useState<'idle' | 'sending' | 'done' | 'error'>('idle');
   const [token, setToken] = useState<string | null>(null);
-  const turnstileRef = useRef<{ reset: () => void }>(null);
+  const turnstileRef = useRef<TurnstileInstance>(null);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -283,21 +286,26 @@ function RsvpCard({ c, onNext }: CardProps) {
     setStatus('sending');
     const fd = new FormData(e.currentTarget);
     const body = {
-      apiKey: STATICFORMS_KEY,
-      subject: 'Wedding RSVP',
       name: fd.get('name'),
-      message: `Attendance: ${fd.get('attendance')}${fd.get('guests') ? ` | Guests: ${fd.get('guests')}` : ''}`,
-      'cf-turnstile-response': token,
+      attendance: fd.get('attendance'),
+      guests: fd.get('guests'),
+      lang: c === C.en ? 'en' : 'id',
+      turnstileToken: token,
     };
     try {
-      await fetch('https://api.staticforms.dev/submit', {
+      const response = await fetch('/api/rsvp', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body),
       });
-    } catch {}
-    setStatus('done');
-    turnstileRef.current?.reset();
+      if (!response.ok) throw new Error('RSVP failed');
+      setStatus('done');
+    } catch {
+      setStatus('error');
+    } finally {
+      setToken(null);
+      turnstileRef.current?.reset();
+    }
   };
 
   return (
@@ -334,6 +342,7 @@ function RsvpCard({ c, onNext }: CardProps) {
             {status === 'sending' && <span className="bd-btn-spinner" aria-hidden="true" />}
             {status === 'sending' ? c.rsending : c.rsend}
           </button>
+          {status === 'error' && <p className="bd-err">{c.failed}</p>}
         </form>
       )}
     </section>
@@ -341,22 +350,57 @@ function RsvpCard({ c, onNext }: CardProps) {
 }
 
 function WishesCard({ c, lang }: { c: typeof C[Lang]; lang: Lang }) {
-  const [state, handleSubmit] = useForm('mrejzzzd');
+  const [status, setStatus] = useState<'idle' | 'sending' | 'done' | 'error'>('idle');
+  const [token, setToken] = useState<string | null>(null);
+  const turnstileRef = useRef<TurnstileInstance>(null);
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (!token) return;
+    setStatus('sending');
+    const fd = new FormData(e.currentTarget);
+    try {
+      const response = await fetch('/api/wishes', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: fd.get('name'),
+          message: fd.get('message'),
+          lang,
+          turnstileToken: token,
+        }),
+      });
+      if (!response.ok) throw new Error('Wish failed');
+      setStatus('done');
+    } catch {
+      setStatus('error');
+    } finally {
+      setToken(null);
+      turnstileRef.current?.reset();
+    }
+  };
+
   return (
     <section className="bd-card bd-wishes-card">
       <p className="bd-kicker">{c.wl}</p>
-      {state.succeeded ? (
+      {status === 'done' ? (
         <p className="bd-thanks">{c.sent}</p>
       ) : (
         <form className="bd-form" onSubmit={handleSubmit}>
           <input type="hidden" name="lang" value={lang} />
           <input type="text" name="name" placeholder={c.name} required maxLength={80} />
-          <ValidationError field="name" errors={state.errors} className="bd-err" />
           <textarea name="message" placeholder={c.msg} required maxLength={400} rows={3} />
-          <ValidationError field="message" errors={state.errors} className="bd-err" />
-          <button type="submit" className="bd-btn" disabled={state.submitting}>
-            {state.submitting ? '···' : c.send}
+          <div style={{ position: 'fixed', bottom: -200, left: -200, pointerEvents: 'none', opacity: 0 }}>
+            <Turnstile ref={turnstileRef} siteKey={TURNSTILE_SITE_KEY}
+              onSuccess={setToken} onExpire={() => setToken(null)}
+              options={{ theme: 'light', appearance: 'execute' }} />
+          </div>
+          <button type="submit" className="bd-btn bd-rsvp-submit" disabled={status === 'sending' || !token}
+            aria-busy={status === 'sending'}>
+            {status === 'sending' && <span className="bd-btn-spinner" aria-hidden="true" />}
+            {status === 'sending' ? c.sending : c.send}
           </button>
+          {status === 'error' && <p className="bd-err">{c.failed}</p>}
         </form>
       )}
       <p className="bd-footer-inline">Taslia &amp; Varian · MMXXVI</p>
