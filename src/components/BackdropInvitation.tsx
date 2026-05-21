@@ -34,6 +34,10 @@ const C = {
     sending: 'Sending wishes',
     sent: 'Thank you for the wish ♡',
     failed: 'Something went wrong. Please try again.',
+    required: 'Please complete your name first.',
+    attendanceRequired: 'Please choose your attendance.',
+    messageRequired: 'Please write a message first.',
+    security: 'Security check is still loading. Please try again in a moment.',
     music: 'music',
     rl: 'Will you join us?',
     rt: 'Will you join us?',
@@ -76,6 +80,10 @@ const C = {
     sending: 'Mengirim ucapan',
     sent: 'Terima kasih ♡',
     failed: 'Maaf, terjadi kendala. Silakan coba lagi.',
+    required: 'Mohon isi nama Anda terlebih dahulu.',
+    attendanceRequired: 'Mohon pilih konfirmasi kehadiran Anda.',
+    messageRequired: 'Mohon tulis pesan Anda terlebih dahulu.',
+    security: 'Pemeriksaan keamanan masih dimuat. Silakan coba lagi sebentar lagi.',
     music: 'musik',
     rl: 'Apakah Anda berkenan hadir?',
     rt: 'Apakah Anda berkenan hadir?',
@@ -300,18 +308,35 @@ const TURNSTILE_SITE_KEY = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY || '0x4AAAA
 function RsvpCard({ c, onNext }: CardProps) {
   const [attending, setAttending] = useState<'yes' | 'no' | null>(null);
   const [status, setStatus] = useState<'idle' | 'sending' | 'done' | 'error'>('idle');
+  const [errorText, setErrorText] = useState('');
   const [token, setToken] = useState<string | null>(null);
   const turnstileRef = useRef<TurnstileInstance>(null);
   const sectionRef = useSnapRecenter(status);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (!token) return;
-    setStatus('sending');
+    setErrorText('');
     const fd = new FormData(e.currentTarget);
+    const name = String(fd.get('name') || '').trim();
+    const attendance = fd.get('attendance');
+
+    if (!name) {
+      setErrorText(c.required);
+      return;
+    }
+    if (!attendance) {
+      setErrorText(c.attendanceRequired);
+      return;
+    }
+    if (!token) {
+      setErrorText(c.security);
+      return;
+    }
+
+    setStatus('sending');
     const body = {
-      name: fd.get('name'),
-      attendance: fd.get('attendance'),
+      name,
+      attendance,
       guests: fd.get('guests'),
       lang: c === C.en ? 'en' : 'id',
       turnstileToken: token,
@@ -325,6 +350,7 @@ function RsvpCard({ c, onNext }: CardProps) {
       if (!response.ok) throw new Error('RSVP failed');
       setStatus('done');
     } catch {
+      setErrorText(c.failed);
       setStatus('error');
     } finally {
       setToken(null);
@@ -342,7 +368,7 @@ function RsvpCard({ c, onNext }: CardProps) {
         </>
       ) : (
         <form className="bd-form" onSubmit={handleSubmit}>
-          <input type="text" name="name" placeholder={c.rname} required maxLength={80} />
+          <input type="text" name="name" placeholder={c.rname} required aria-required="true" maxLength={80} />
           <div className="bd-radio-group">
             <label className={`bd-radio${attending === 'yes' ? ' bd-radio-on' : ''}`}>
               <input type="radio" name="attendance" value="yes" required onChange={() => setAttending('yes')} />
@@ -361,12 +387,12 @@ function RsvpCard({ c, onNext }: CardProps) {
               onSuccess={setToken} onExpire={() => setToken(null)}
               options={{ theme: 'light', appearance: 'execute' }} />
           </div>
-          <button type="submit" className="bd-btn bd-rsvp-submit" disabled={status === 'sending' || !token}
+          <button type="submit" className="bd-btn bd-rsvp-submit" disabled={status === 'sending'}
             aria-busy={status === 'sending'}>
             {status === 'sending' && <span className="bd-btn-spinner" aria-hidden="true" />}
             {status === 'sending' ? c.rsending : c.rsend}
           </button>
-          {status === 'error' && <p className="bd-err">{c.failed}</p>}
+          {(status === 'error' || errorText) && <p className="bd-err">{errorText || c.failed}</p>}
         </form>
       )}
     </section>
@@ -375,22 +401,39 @@ function RsvpCard({ c, onNext }: CardProps) {
 
 function WishesCard({ c, lang }: { c: typeof C[Lang]; lang: Lang }) {
   const [status, setStatus] = useState<'idle' | 'sending' | 'done' | 'error'>('idle');
+  const [errorText, setErrorText] = useState('');
   const [token, setToken] = useState<string | null>(null);
   const turnstileRef = useRef<TurnstileInstance>(null);
   const sectionRef = useSnapRecenter(status);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (!token) return;
-    setStatus('sending');
+    setErrorText('');
     const fd = new FormData(e.currentTarget);
+    const name = String(fd.get('name') || '').trim();
+    const message = String(fd.get('message') || '').trim();
+
+    if (!name) {
+      setErrorText(c.required);
+      return;
+    }
+    if (!message) {
+      setErrorText(c.messageRequired);
+      return;
+    }
+    if (!token) {
+      setErrorText(c.security);
+      return;
+    }
+
+    setStatus('sending');
     try {
       const response = await fetch('/api/wishes', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          name: fd.get('name'),
-          message: fd.get('message'),
+          name,
+          message,
           lang,
           turnstileToken: token,
         }),
@@ -398,6 +441,7 @@ function WishesCard({ c, lang }: { c: typeof C[Lang]; lang: Lang }) {
       if (!response.ok) throw new Error('Wish failed');
       setStatus('done');
     } catch {
+      setErrorText(c.failed);
       setStatus('error');
     } finally {
       setToken(null);
@@ -413,19 +457,19 @@ function WishesCard({ c, lang }: { c: typeof C[Lang]; lang: Lang }) {
       ) : (
         <form className="bd-form" onSubmit={handleSubmit}>
           <input type="hidden" name="lang" value={lang} />
-          <input type="text" name="name" placeholder={c.name} required maxLength={80} />
-          <textarea name="message" placeholder={c.msg} required maxLength={400} rows={3} />
+          <input type="text" name="name" placeholder={c.name} required aria-required="true" maxLength={80} />
+          <textarea name="message" placeholder={c.msg} required aria-required="true" maxLength={400} rows={3} />
           <div style={{ position: 'fixed', bottom: -200, left: -200, pointerEvents: 'none', opacity: 0 }}>
             <Turnstile ref={turnstileRef} siteKey={TURNSTILE_SITE_KEY}
               onSuccess={setToken} onExpire={() => setToken(null)}
               options={{ theme: 'light', appearance: 'execute' }} />
           </div>
-          <button type="submit" className="bd-btn bd-rsvp-submit" disabled={status === 'sending' || !token}
+          <button type="submit" className="bd-btn bd-rsvp-submit" disabled={status === 'sending'}
             aria-busy={status === 'sending'}>
             {status === 'sending' && <span className="bd-btn-spinner" aria-hidden="true" />}
             {status === 'sending' ? c.sending : c.send}
           </button>
-          {status === 'error' && <p className="bd-err">{c.failed}</p>}
+          {(status === 'error' || errorText) && <p className="bd-err">{errorText || c.failed}</p>}
         </form>
       )}
       <p className="bd-footer-inline">Taslia &amp; Varian · MMXXVI</p>

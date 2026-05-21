@@ -55,4 +55,18 @@ describe('validateWishPayload', () => {
       turnstileToken: 'token',
     })).toEqual({ ok: false, error: 'Please keep the message under 400 characters.' });
   });
+
+  test('rejects empty names and empty messages', () => {
+    expect(validateWishPayload({
+      name: ' ',
+      message: 'Congratulations',
+      turnstileToken: 'token',
+    })).toEqual({ ok: false, error: 'Please complete the required fields.' });
+
+    expect(validateWishPayload({
+      name: 'Taslia',
+      message: ' ',
+      turnstileToken: 'token',
+    })).toEqual({ ok: false, error: 'Please complete the required fields.' });
+  });
 });

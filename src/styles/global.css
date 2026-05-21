@@ -38,12 +38,14 @@ html.bd-page body {
   --bd-sage:   #6b7f5e;
   --bd-paper:  rgba(255, 252, 248, 0.88);
   --bd-border: rgba(107, 127, 94, 0.18);
+  --bd-frame-width: 56.25vh;
   --bd-frame-width: 56.25svh;
   --bd-safe-width: min(310px, calc(var(--bd-frame-width) * 0.58));
   --bd-hero-safe-width: min(320px, calc(var(--bd-frame-width) * 0.60));
   --bd-copy-safe-width: min(290px, calc(var(--bd-frame-width) * 0.55));
   position: fixed;
   inset: 0;
+  height: 100vh;
   height: 100svh;
   overflow: hidden;
   background: #f0ebe2;
@@ -80,10 +82,22 @@ html.bd-page body {
   top: 0;
   left: 50%;
   transform: translateX(-50%);
+  height: 100vh;
   height: 100svh;
   width: auto;
   z-index: 0;
   pointer-events: none;
+}
+
+@supports (height: 100dvh) {
+  .bd-root {
+    --bd-frame-width: 56.25dvh;
+    height: 100dvh;
+  }
+
+  .bd-bg {
+    height: 100dvh;
+  }
 }
 
 /* ── Splash ── */
@@ -930,6 +944,63 @@ html.bd-page body {
   .bd-content .bd-rsvp-card,
   .bd-content .bd-wishes-card {
     padding: 24px 0 40px;
+  }
+}
+
+@media (min-width: 600px) and (max-width: 1180px) {
+  .bd-root {
+    --bd-frame-width: min(76vw, 56.25vh);
+    --bd-frame-width: min(76vw, 56.25svh);
+    --bd-safe-width: min(330px, calc(var(--bd-frame-width) * 0.58));
+    --bd-hero-safe-width: min(350px, calc(var(--bd-frame-width) * 0.61));
+    --bd-copy-safe-width: min(315px, calc(var(--bd-frame-width) * 0.55));
+    --bd-control-safe-width: min(305px, calc(var(--bd-frame-width) * 0.53));
+  }
+
+  .bd-bg {
+    width: var(--bd-frame-width);
+    height: auto;
+  }
+
+  .bd-content .bd-card {
+    padding: 42px 0 58px;
+  }
+
+  .bd-content .bd-date-card,
+  .bd-content .bd-rsvp-card,
+  .bd-content .bd-wishes-card {
+    width: var(--bd-control-safe-width);
+  }
+
+  .bd-card-title {
+    font-size: clamp(25px, calc(var(--bd-frame-width) * 0.060), 32px);
+  }
+
+  .bd-name-block h2 {
+    font-size: clamp(22px, calc(var(--bd-frame-width) * 0.048), 28px);
+  }
+
+  .bd-content .bd-copy {
+    font-size: clamp(15px, calc(var(--bd-frame-width) * 0.036), 18px);
+    line-height: 1.52;
+  }
+
+  .bd-kicker {
+    letter-spacing: 0.18em;
+  }
+
+  .bd-date-num {
+    font-size: clamp(48px, calc(var(--bd-frame-width) * 0.13), 64px);
+  }
+
+  .bd-date-time {
+    font-size: clamp(24px, calc(var(--bd-frame-width) * 0.060), 32px);
+  }
+
+  .bd-form input,
+  .bd-form textarea,
+  .bd-radio {
+    font-size: 13px;
   }
 }
 
