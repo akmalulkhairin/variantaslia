@@ -690,11 +690,40 @@ html.bd-page body {
 
 /* ── Responsive ── */
 @media (max-width: 599px) {
+  .bd-root {
+    /*
+      Mobile target is a normal browser link, not a fullscreen app.
+      Cap the frame by viewport width so tall emulated browser viewports do
+      not zoom the arch wider than the real phone browser frame.
+    */
+    --bd-frame-width: min(100vw, 56.25svh);
+    --bd-safe-width: min(280px, 70vw);
+    --bd-hero-safe-width: var(--bd-safe-width);
+    --bd-copy-safe-width: var(--bd-safe-width);
+    --bd-control-safe-width: var(--bd-safe-width);
+  }
+
+  .bd-bg {
+    width: var(--bd-frame-width);
+    height: auto;
+  }
+
   .bd-content .bd-card {
-    /* Padding scales with arch width (svh-based) so content always clears the ring */
-    width: min(var(--bd-frame-width), 100vw);
-    padding: 40px calc(var(--bd-frame-width) * 0.12) 60px;
-    box-sizing: border-box;
+    padding: 40px 0 60px;
+    width: var(--bd-hero-safe-width);
+  }
+
+  .bd-content .bd-story-card,
+  .bd-content .bd-wishes-card,
+  .bd-content .bd-date-card,
+  .bd-content .bd-map-card,
+  .bd-content .bd-rsvp-card {
+    width: var(--bd-copy-safe-width);
+  }
+
+  .bd-content .bd-date-card,
+  .bd-content .bd-rsvp-card {
+    width: var(--bd-control-safe-width);
   }
 
   .bd-compass {
@@ -722,24 +751,24 @@ html.bd-page body {
   }
 
   .bd-card-title {
-    font-size: clamp(22px, 6.4vw, 27px);
+    font-size: clamp(21px, 5.8vw, 25px);
   }
 
   .bd-copy {
-    font-size: clamp(14px, 3.8vw, 16px);
-    line-height: 1.45;
+    font-size: clamp(13px, 3.45vw, 15px);
+    line-height: 1.42;
   }
 
   .bd-story-card .bd-card-title {
-    font-size: clamp(21px, 6vw, 25px);
+    font-size: clamp(20px, 5.4vw, 24px);
     line-height: 1.1;
     margin-bottom: 12px;
   }
 
   .bd-story-card .bd-copy {
     gap: 9px;
-    font-size: clamp(13px, 3.6vw, 15px);
-    line-height: 1.38;
+    font-size: clamp(12px, 3.3vw, 14px);
+    line-height: 1.36;
   }
 
   .bd-kicker {
@@ -748,6 +777,37 @@ html.bd-page body {
 
   .bd-location {
     letter-spacing: 0.10em;
+  }
+
+  .bd-date-num {
+    font-size: clamp(42px, 12vw, 54px);
+  }
+
+  .bd-date-row {
+    gap: 14px;
+    font-size: 12px;
+    letter-spacing: 0.20em;
+  }
+
+  .bd-date-time {
+    font-size: clamp(24px, 7vw, 30px);
+  }
+
+  .bd-date-unit {
+    font-size: 10px;
+    letter-spacing: 0.16em;
+    margin-bottom: 12px;
+  }
+
+  .bd-actions {
+    width: 100%;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    gap: 8px;
+  }
+
+  .bd-actions .bd-btn {
+    width: 100%;
   }
 
   /* RSVP compact — fit form inside arch like hero card */
@@ -760,17 +820,19 @@ html.bd-page body {
   .bd-rsvp-card .bd-form {
     gap: 8px;
     margin-top: 10px;
+    width: 100%;
   }
 
   .bd-rsvp-card .bd-form input,
   .bd-rsvp-card .bd-form textarea {
-    padding: 10px 12px;
-    font-size: 13px;
+    padding: 9px 11px;
+    font-size: 12px;
   }
 
   .bd-rsvp-card .bd-radio {
-    padding: 10px 14px;
-    font-size: 13px;
+    gap: 8px;
+    padding: 9px 11px;
+    font-size: 12px;
   }
 
   .bd-rsvp-card .bd-radio-group {
@@ -779,6 +841,7 @@ html.bd-page body {
 
   .bd-rsvp-card .bd-btn {
     margin-top: 4px;
+    width: 100%;
   }
 
   /* Tighter top/bottom padding for tall content cards */
