@@ -42,6 +42,8 @@ html.bd-page body {
   --bd-safe-width: min(310px, calc(var(--bd-frame-width) * 0.58));
   --bd-hero-safe-width: min(320px, calc(var(--bd-frame-width) * 0.60));
   --bd-copy-safe-width: min(290px, calc(var(--bd-frame-width) * 0.55));
+  position: fixed;
+  inset: 0;
   height: 100svh;
   overflow: hidden;
   background: #f0ebe2;
@@ -74,13 +76,14 @@ html.bd-page body {
 
 /* Height-fit: arch always fills full viewport height, sides clip cleanly */
 .bd-bg {
-  position: fixed;
+  position: absolute;
   top: 0;
   left: 50%;
   transform: translateX(-50%);
   height: 100svh;
   width: auto;
   z-index: 0;
+  pointer-events: none;
 }
 
 /* ── Splash ── */
@@ -178,8 +181,9 @@ html.bd-page body {
 
 /* ── Content (post-open) ── */
 .bd-content {
-  position: fixed;
+  position: absolute;
   inset: 0;
+  height: 100%;
   z-index: 10;
   overflow-x: hidden;
   overflow-y: auto;
@@ -199,7 +203,8 @@ html.bd-page body {
 }
 
 .bd-card-slot {
-  min-height: 100svh;
+  min-height: 100%;
+  height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -731,6 +736,10 @@ html.bd-page body {
   .bd-bg {
     width: var(--bd-frame-width);
     height: auto;
+  }
+
+  .bd-content {
+    height: 100%;
   }
 
   .bd-content .bd-card {
