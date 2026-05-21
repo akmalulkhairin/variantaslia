@@ -692,9 +692,9 @@ html.bd-page body {
 @media (max-width: 599px) {
   .bd-root {
     /* arch inner ≈ 54vw on all target phones after side clip */
-    --bd-safe-width: 48vw;
+    --bd-safe-width: 46vw;
     --bd-hero-safe-width: 54vw;
-    --bd-copy-safe-width: 44vw;
+    --bd-copy-safe-width: 46vw;
   }
 
   .bd-content .bd-card {
@@ -753,6 +753,14 @@ html.bd-page body {
     gap: 9px;
     font-size: clamp(13px, 3.6vw, 15px);
     line-height: 1.38;
+  }
+
+  .bd-kicker {
+    letter-spacing: 0.12em;
+  }
+
+  .bd-location {
+    letter-spacing: 0.10em;
   }
 
   /* RSVP compact — fit form inside arch like hero card */
