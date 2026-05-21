@@ -220,7 +220,10 @@ html.bd-page body {
 }
 
 .bd-content .bd-story-card,
-.bd-content .bd-wishes-card {
+.bd-content .bd-wishes-card,
+.bd-content .bd-date-card,
+.bd-content .bd-map-card,
+.bd-content .bd-rsvp-card {
   width: var(--bd-copy-safe-width);
 }
 
@@ -697,6 +700,14 @@ html.bd-page body {
   .bd-content .bd-card {
     padding: 40px 0 60px;
     width: var(--bd-hero-safe-width);
+  }
+
+  .bd-content .bd-story-card,
+  .bd-content .bd-wishes-card,
+  .bd-content .bd-date-card,
+  .bd-content .bd-map-card,
+  .bd-content .bd-rsvp-card {
+    width: var(--bd-copy-safe-width);
   }
 
   .bd-compass {
