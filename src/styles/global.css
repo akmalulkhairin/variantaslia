@@ -727,11 +727,19 @@ html.bd-page body {
   }
 
   .bd-content .bd-story-card {
-    transform: translateY(20px);
+    transform: translate(5px, 20px);
   }
 
   .bd-content .bd-date-card {
     transform: translateY(10px);
+  }
+
+  .bd-content .bd-hero-card {
+    transform: translateY(12px);
+  }
+
+  .bd-content .bd-wishes-card {
+    transform: translateY(8px);
   }
 
   .bd-compass {
@@ -744,7 +752,7 @@ html.bd-page body {
   }
 
   .bd-name-block h2 {
-    font-size: clamp(13px, 4.0vw, 17px);
+    font-size: clamp(16px, calc(4.0vw + 3px), 20px);
   }
 
   .bd-name-block p {
@@ -863,6 +871,12 @@ html.bd-page body {
   .bd-rsvp-card .bd-btn {
     margin-top: 4px;
     width: 100%;
+  }
+
+  .bd-wishes-card .bd-form {
+    width: calc(100% - 16px);
+    gap: 7px;
+    margin-top: 8px;
   }
 
   /* Tighter top/bottom padding for tall content cards */

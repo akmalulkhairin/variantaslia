@@ -342,7 +342,6 @@ function WishesCard({ c, lang }: { c: typeof C[Lang]; lang: Lang }) {
   return (
     <section className="bd-card bd-wishes-card">
       <p className="bd-kicker">{c.wl}</p>
-      <h2 className="bd-card-title">{c.wt}</h2>
       {state.succeeded ? (
         <p className="bd-thanks">{c.sent}</p>
       ) : (
