@@ -40,6 +40,7 @@ const C = {
     rno: 'Sorry, I cannot attend',
     rguests: 'Number of guests (including yourself)',
     rsend: 'Send RSVP',
+    rsending: 'Sending RSVP',
     rsent: 'See you on the day ♡',
     rno_sent: 'Thank you for letting us know ♡',
     next: 'next',
@@ -79,6 +80,7 @@ const C = {
     rno: 'Maaf, saya tidak dapat hadir',
     rguests: 'Jumlah tamu (termasuk Anda)',
     rsend: 'Kirim konfirmasi',
+    rsending: 'Mengirim konfirmasi',
     rsent: 'Sampai jumpa di hari bahagia ♡',
     rno_sent: 'Terima kasih telah memberi tahu kami ♡',
     next: 'lanjut',
@@ -327,8 +329,10 @@ function RsvpCard({ c, onNext }: CardProps) {
               onSuccess={setToken} onExpire={() => setToken(null)}
               options={{ theme: 'light', appearance: 'execute' }} />
           </div>
-          <button type="submit" className="bd-btn" disabled={status === 'sending' || !token}>
-            {status === 'sending' ? '···' : c.rsend}
+          <button type="submit" className="bd-btn bd-rsvp-submit" disabled={status === 'sending' || !token}
+            aria-busy={status === 'sending'}>
+            {status === 'sending' && <span className="bd-btn-spinner" aria-hidden="true" />}
+            {status === 'sending' ? c.rsending : c.rsend}
           </button>
         </form>
       )}

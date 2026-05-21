@@ -419,6 +419,28 @@ html.bd-page body {
   color: var(--bd-sage);
 }
 
+.bd-btn:disabled {
+  cursor: wait;
+  opacity: 0.82;
+}
+
+.bd-rsvp-submit {
+  gap: 8px;
+}
+
+.bd-btn-spinner {
+  width: 10px;
+  height: 10px;
+  border: 1px solid currentColor;
+  border-right-color: transparent;
+  border-radius: 50%;
+  animation: bdSpin 0.85s linear infinite;
+}
+
+@keyframes bdSpin {
+  to { transform: rotate(360deg); }
+}
+
 .bd-btn-ghost {
   background: transparent;
   color: var(--bd-sage);
