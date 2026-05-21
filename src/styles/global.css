@@ -727,7 +727,7 @@ html.bd-page body {
   }
 
   .bd-content .bd-story-card {
-    transform: translate(5px, 20px);
+    transform: translate(10px, 20px);
   }
 
   .bd-content .bd-date-card {
@@ -735,7 +735,8 @@ html.bd-page body {
   }
 
   .bd-content .bd-rsvp-card {
-    transform: translateY(15px);
+    transform: translate(5px, 20px);
+    width: min(248px, 62vw);
   }
 
   .bd-content .bd-hero-card {
@@ -743,7 +744,7 @@ html.bd-page body {
   }
 
   .bd-content .bd-wishes-card {
-    transform: translateY(20px);
+    transform: translateY(30px);
   }
 
   .bd-compass {
@@ -845,7 +846,7 @@ html.bd-page body {
   .bd-rsvp-card .bd-card-title {
     font-size: clamp(20px, 5.6vw, 24px);
     line-height: 1.15;
-    width: min(220px, 58vw);
+    width: min(188px, 52vw);
     margin-top: 10px;
     margin-bottom: 4px;
   }
@@ -853,7 +854,7 @@ html.bd-page body {
   .bd-rsvp-card .bd-form {
     gap: 8px;
     margin-top: 10px;
-    width: 100%;
+    width: calc(100% - 16px);
   }
 
   .bd-rsvp-card .bd-form input,
@@ -881,6 +882,11 @@ html.bd-page body {
     width: calc(100% - 16px);
     gap: 7px;
     margin-top: 8px;
+  }
+
+  .bd-wishes-card .bd-kicker {
+    font-size: 11px;
+    letter-spacing: 0.12em;
   }
 
   /* Tighter top/bottom padding for tall content cards */
