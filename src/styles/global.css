@@ -697,7 +697,7 @@ html.bd-page body {
       not zoom the arch wider than the real phone browser frame.
     */
     --bd-frame-width: min(100vw, 56.25svh);
-    --bd-safe-width: min(280px, 70vw);
+    --bd-safe-width: min(264px, 66vw);
     --bd-hero-safe-width: var(--bd-safe-width);
     --bd-copy-safe-width: var(--bd-safe-width);
     --bd-control-safe-width: var(--bd-safe-width);
@@ -726,6 +726,14 @@ html.bd-page body {
     width: var(--bd-control-safe-width);
   }
 
+  .bd-content .bd-story-card {
+    transform: translateY(20px);
+  }
+
+  .bd-content .bd-date-card {
+    transform: translateY(10px);
+  }
+
   .bd-compass {
     width: clamp(118px, 34vw, 148px);
   }
@@ -751,51 +759,59 @@ html.bd-page body {
   }
 
   .bd-card-title {
-    font-size: clamp(21px, 5.8vw, 25px);
+    font-size: clamp(20px, 5.3vw, 24px);
   }
 
   .bd-copy {
-    font-size: clamp(13px, 3.45vw, 15px);
-    line-height: 1.42;
+    font-size: clamp(12px, 3.1vw, 14px);
+    line-height: 1.44;
   }
 
   .bd-story-card .bd-card-title {
-    font-size: clamp(20px, 5.4vw, 24px);
-    line-height: 1.1;
+    font-size: clamp(19px, 5vw, 22px);
+    line-height: 1.14;
     margin-bottom: 12px;
   }
 
   .bd-story-card .bd-copy {
     gap: 9px;
-    font-size: clamp(12px, 3.3vw, 14px);
-    line-height: 1.36;
+    font-size: clamp(11.5px, 3vw, 13px);
+    line-height: 1.42;
   }
 
   .bd-kicker {
-    letter-spacing: 0.12em;
+    font-size: 9px;
+    letter-spacing: 0.10em;
   }
 
   .bd-location {
+    font-size: 12px;
     letter-spacing: 0.10em;
   }
 
   .bd-date-num {
-    font-size: clamp(42px, 12vw, 54px);
+    font-size: clamp(34px, 9.6vw, 44px);
+    margin: 5px 0 2px;
   }
 
   .bd-date-row {
-    gap: 14px;
-    font-size: 12px;
-    letter-spacing: 0.20em;
+    gap: 10px;
+    font-size: 10px;
+    letter-spacing: 0.16em;
+    margin-bottom: 4px;
   }
 
   .bd-date-time {
-    font-size: clamp(24px, 7vw, 30px);
+    font-size: clamp(20px, 5.8vw, 25px);
   }
 
   .bd-date-unit {
-    font-size: 10px;
-    letter-spacing: 0.16em;
+    font-size: 9px;
+    letter-spacing: 0.14em;
+    margin: 4px 0 9px;
+  }
+
+  .bd-date-card .bd-location {
     margin-bottom: 12px;
   }
 
@@ -803,17 +819,22 @@ html.bd-page body {
     width: 100%;
     flex-direction: column;
     flex-wrap: nowrap;
-    gap: 8px;
+    gap: 7px;
   }
 
   .bd-actions .bd-btn {
     width: 100%;
+    padding: 9px 16px;
+    font-size: 9px;
+    letter-spacing: 0.16em;
   }
 
   /* RSVP compact — fit form inside arch like hero card */
   .bd-rsvp-card .bd-card-title {
     font-size: clamp(20px, 5.6vw, 24px);
     line-height: 1.15;
+    width: min(220px, 58vw);
+    margin-top: 10px;
     margin-bottom: 4px;
   }
 
