@@ -744,7 +744,7 @@ html.bd-page body {
   }
 
   .bd-content .bd-wishes-card {
-    transform: translateY(30px);
+    transform: translate(5px, 30px);
   }
 
   .bd-compass {
@@ -879,7 +879,7 @@ html.bd-page body {
   }
 
   .bd-wishes-card .bd-form {
-    width: calc(100% - 16px);
+    width: min(232px, calc(100% - 16px));
     gap: 7px;
     margin-top: 8px;
   }
