@@ -692,9 +692,9 @@ html.bd-page body {
 @media (max-width: 599px) {
   .bd-root {
     /* arch inner ≈ 54vw on all target phones after side clip */
-    --bd-safe-width: 52vw;
+    --bd-safe-width: 48vw;
     --bd-hero-safe-width: 54vw;
-    --bd-copy-safe-width: 50vw;
+    --bd-copy-safe-width: 44vw;
   }
 
   .bd-content .bd-card {
