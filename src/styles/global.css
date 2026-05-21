@@ -734,12 +734,16 @@ html.bd-page body {
     transform: translateY(10px);
   }
 
+  .bd-content .bd-rsvp-card {
+    transform: translateY(15px);
+  }
+
   .bd-content .bd-hero-card {
     transform: translateY(12px);
   }
 
   .bd-content .bd-wishes-card {
-    transform: translateY(8px);
+    transform: translateY(20px);
   }
 
   .bd-compass {

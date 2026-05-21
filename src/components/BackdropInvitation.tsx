@@ -33,8 +33,8 @@ const C = {
     send: 'Send wishes',
     sent: 'Thank you for the wish ♡',
     music: 'music',
-    rl: 'RSVP',
-    rt: 'Will you be joining us?',
+    rl: 'Attendance Confirmation',
+    rt: 'Attendance Confirmation',
     rname: 'Your name',
     ryes: 'Yes, I will attend',
     rno: 'Sorry, I cannot attend',
@@ -73,7 +73,7 @@ const C = {
     sent: 'Terima kasih ♡',
     music: 'musik',
     rl: 'Konfirmasi Kehadiran',
-    rt: 'Apakah Anda dapat hadir?',
+    rt: 'Konfirmasi Kehadiran',
     rname: 'Nama Anda',
     ryes: 'Ya, saya akan hadir',
     rno: 'Maaf, saya tidak dapat hadir',
@@ -300,8 +300,7 @@ function RsvpCard({ c, onNext }: CardProps) {
 
   return (
     <section className="bd-card bd-rsvp-card">
-      <p className="bd-kicker">{c.rl}</p>
-      {status !== 'done' && <h2 className="bd-card-title">{c.rt}</h2>}
+      {status !== 'done' && <h2 className="bd-card-title">{c.rl}</h2>}
       {status === 'done' ? (
         <>
           <p className="bd-thanks">{attending === 'no' ? c.rno_sent : c.rsent}</p>
