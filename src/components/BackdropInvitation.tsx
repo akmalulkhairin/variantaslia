@@ -98,6 +98,29 @@ const TOTAL_CARDS = 6;
 
 // ── Hooks ───────────────────────────────────────────────────────────────────
 
+function useSnapRecenter(status: 'idle' | 'sending' | 'done' | 'error') {
+  const ref = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    if (status === 'idle' || status === 'sending') return;
+
+    const active = document.activeElement;
+    if (active instanceof HTMLElement) active.blur();
+
+    const frame = requestAnimationFrame(() => {
+      ref.current?.closest('.bd-card-slot')?.scrollIntoView({
+        block: 'start',
+        inline: 'nearest',
+        behavior: 'auto',
+      });
+    });
+
+    return () => cancelAnimationFrame(frame);
+  }, [status]);
+
+  return ref;
+}
+
 function useAudio(started: boolean) {
   const ref = useRef<HTMLAudioElement>(null);
   const rampRef = useRef<ReturnType<typeof setInterval> | null>(null);
@@ -279,6 +302,7 @@ function RsvpCard({ c, onNext }: CardProps) {
   const [status, setStatus] = useState<'idle' | 'sending' | 'done' | 'error'>('idle');
   const [token, setToken] = useState<string | null>(null);
   const turnstileRef = useRef<TurnstileInstance>(null);
+  const sectionRef = useSnapRecenter(status);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -309,7 +333,7 @@ function RsvpCard({ c, onNext }: CardProps) {
   };
 
   return (
-    <section className="bd-card bd-rsvp-card">
+    <section ref={sectionRef} className="bd-card bd-rsvp-card">
       {status !== 'done' && <h2 className="bd-card-title">{c.rl}</h2>}
       {status === 'done' ? (
         <>
@@ -353,6 +377,7 @@ function WishesCard({ c, lang }: { c: typeof C[Lang]; lang: Lang }) {
   const [status, setStatus] = useState<'idle' | 'sending' | 'done' | 'error'>('idle');
   const [token, setToken] = useState<string | null>(null);
   const turnstileRef = useRef<TurnstileInstance>(null);
+  const sectionRef = useSnapRecenter(status);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -381,7 +406,7 @@ function WishesCard({ c, lang }: { c: typeof C[Lang]; lang: Lang }) {
   };
 
   return (
-    <section className="bd-card bd-wishes-card">
+    <section ref={sectionRef} className="bd-card bd-wishes-card">
       <p className="bd-kicker">{c.wl}</p>
       {status === 'done' ? (
         <p className="bd-thanks">{c.sent}</p>

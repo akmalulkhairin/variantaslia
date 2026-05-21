@@ -191,7 +191,9 @@ html.bd-page body {
   scroll-snap-type: y mandatory;
   scroll-behavior: smooth;
   overscroll-behavior-y: contain;
+  overflow-anchor: none;
   scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
 }
 
 .bd-content::-webkit-scrollbar {
@@ -210,6 +212,7 @@ html.bd-page body {
   justify-content: center;
   scroll-snap-align: start;
   scroll-snap-stop: always;
+  overflow-anchor: none;
   pointer-events: auto;
 }
 
