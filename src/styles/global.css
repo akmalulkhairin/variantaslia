@@ -518,6 +518,29 @@ html.bd-page body {
   resize: vertical;
 }
 
+.bd-turnstile {
+  display: flex;
+  justify-content: center;
+  min-height: 140px;
+  overflow: hidden;
+}
+
+.bd-security-panel {
+  display: grid;
+  justify-items: center;
+  gap: 8px;
+  margin-top: 14px;
+  min-height: 170px;
+}
+
+.bd-security-copy {
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--bd-sage);
+  opacity: 0.76;
+}
+
 .bd-err {
   font-size: 12px;
   color: #8f3f35;
@@ -903,7 +926,7 @@ html.bd-page body {
   }
 
   .bd-rsvp-card .bd-form {
-    gap: 8px;
+    gap: 7px;
     margin-top: 10px;
     width: calc(100% - 16px);
   }
@@ -931,8 +954,26 @@ html.bd-page body {
 
   .bd-wishes-card .bd-form {
     width: calc(100% - 16px);
-    gap: 7px;
+    gap: 6px;
     margin-top: 8px;
+  }
+
+  .bd-turnstile {
+    min-height: 126px;
+    transform: scale(0.9);
+    transform-origin: top center;
+    margin-bottom: -12px;
+  }
+
+  .bd-security-panel {
+    gap: 4px;
+    min-height: 138px;
+    margin-top: 8px;
+  }
+
+  .bd-security-copy {
+    font-size: 9px;
+    letter-spacing: 0.12em;
   }
 
   .bd-wishes-card .bd-kicker {

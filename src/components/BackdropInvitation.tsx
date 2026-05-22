@@ -38,6 +38,7 @@ const C = {
     attendanceRequired: 'Please choose your attendance.',
     messageRequired: 'Please write a message first.',
     security: 'Security check is still loading. Please try again in a moment.',
+    securityLoading: 'Checking secure access...',
     music: 'music',
     rl: 'Will you join us?',
     rt: 'Will you join us?',
@@ -84,6 +85,7 @@ const C = {
     attendanceRequired: 'Mohon pilih konfirmasi kehadiran Anda.',
     messageRequired: 'Mohon tulis pesan Anda terlebih dahulu.',
     security: 'Pemeriksaan keamanan masih dimuat. Silakan coba lagi sebentar lagi.',
+    securityLoading: 'Memuat pemeriksaan keamanan...',
     music: 'musik',
     rl: 'Apakah Anda berkenan hadir?',
     rt: 'Apakah Anda berkenan hadir?',
@@ -368,6 +370,18 @@ function RsvpCard({ c, onNext }: CardProps) {
           <p className="bd-thanks">{attending === 'no' ? c.rno_sent : c.rsent}</p>
           <button className="bd-btn" style={{ marginTop: 20 }} onClick={onNext}>{c.next} →</button>
         </>
+      ) : !turnstileReady || !token ? (
+        <div className="bd-security-panel">
+          {turnstileReady ? (
+            <div className="bd-turnstile">
+              <Turnstile ref={turnstileRef} id="rsvp-turnstile" siteKey={TURNSTILE_SITE_KEY}
+                onSuccess={setToken} onExpire={() => setToken(null)}
+                onError={() => setToken(null)}
+                options={{ theme: 'light', size: 'compact', appearance: 'always', refreshExpired: 'auto' }} />
+            </div>
+          ) : null}
+          <p className="bd-security-copy">{c.securityLoading}</p>
+        </div>
       ) : (
         <form className="bd-form" onSubmit={handleSubmit}>
           <input type="text" name="name" placeholder={c.rname} required aria-required="true" maxLength={80} />
@@ -383,14 +397,6 @@ function RsvpCard({ c, onNext }: CardProps) {
           </div>
           {attending === 'yes' && (
             <input type="number" name="guests" min={1} max={10} defaultValue={1} placeholder={c.rguests} />
-          )}
-          {turnstileReady && (
-            <div style={{ position: 'fixed', bottom: -200, left: -200, pointerEvents: 'none', opacity: 0 }}>
-              <Turnstile ref={turnstileRef} id="rsvp-turnstile" siteKey={TURNSTILE_SITE_KEY}
-                onSuccess={setToken} onExpire={() => setToken(null)}
-                onError={() => setToken(null)}
-                options={{ theme: 'light', size: 'invisible', refreshExpired: 'auto' }} />
-            </div>
           )}
           <button type="submit" className="bd-btn bd-rsvp-submit" disabled={status === 'sending'}
             aria-busy={status === 'sending'}>
@@ -461,19 +467,23 @@ function WishesCard({ c, lang }: { c: typeof C[Lang]; lang: Lang }) {
       <p className="bd-kicker">{c.wl}</p>
       {status === 'done' ? (
         <p className="bd-thanks">{c.sent}</p>
+      ) : !turnstileReady || !token ? (
+        <div className="bd-security-panel">
+          {turnstileReady ? (
+            <div className="bd-turnstile">
+              <Turnstile ref={turnstileRef} id="wishes-turnstile" siteKey={TURNSTILE_SITE_KEY}
+                onSuccess={setToken} onExpire={() => setToken(null)}
+                onError={() => setToken(null)}
+                options={{ theme: 'light', size: 'compact', appearance: 'always', refreshExpired: 'auto' }} />
+            </div>
+          ) : null}
+          <p className="bd-security-copy">{c.securityLoading}</p>
+        </div>
       ) : (
         <form className="bd-form" onSubmit={handleSubmit}>
           <input type="hidden" name="lang" value={lang} />
           <input type="text" name="name" placeholder={c.name} required aria-required="true" maxLength={80} />
           <textarea name="message" placeholder={c.msg} required aria-required="true" maxLength={400} rows={3} />
-          {turnstileReady && (
-            <div style={{ position: 'fixed', bottom: -200, left: -200, pointerEvents: 'none', opacity: 0 }}>
-              <Turnstile ref={turnstileRef} id="wishes-turnstile" siteKey={TURNSTILE_SITE_KEY}
-                onSuccess={setToken} onExpire={() => setToken(null)}
-                onError={() => setToken(null)}
-                options={{ theme: 'light', size: 'invisible', refreshExpired: 'auto' }} />
-            </div>
-          )}
           <button type="submit" className="bd-btn bd-rsvp-submit" disabled={status === 'sending'}
             aria-busy={status === 'sending'}>
             {status === 'sending' && <span className="bd-btn-spinner" aria-hidden="true" />}
