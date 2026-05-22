@@ -303,7 +303,7 @@ function MapCard({ c, onNext }: CardProps) {
   );
 }
 
-const TURNSTILE_SITE_KEY = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY || '0x4AAAAAADTKPMeFIbNG0Qty';
+const TURNSTILE_SITE_KEY = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY;
 
 function RsvpCard({ c, onNext }: CardProps) {
   const [attending, setAttending] = useState<'yes' | 'no' | null>(null);
@@ -312,6 +312,7 @@ function RsvpCard({ c, onNext }: CardProps) {
   const [token, setToken] = useState<string | null>(null);
   const turnstileRef = useRef<TurnstileInstance>(null);
   const sectionRef = useSnapRecenter(status);
+  const turnstileReady = Boolean(TURNSTILE_SITE_KEY);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -328,7 +329,8 @@ function RsvpCard({ c, onNext }: CardProps) {
       setErrorText(c.attendanceRequired);
       return;
     }
-    if (!token) {
+    const turnstileToken = turnstileRef.current?.getResponse() || token;
+    if (!turnstileReady || !turnstileToken) {
       setErrorText(c.security);
       return;
     }
@@ -339,7 +341,7 @@ function RsvpCard({ c, onNext }: CardProps) {
       attendance,
       guests: fd.get('guests'),
       lang: c === C.en ? 'en' : 'id',
-      turnstileToken: token,
+      turnstileToken,
     };
     try {
       const response = await fetch('/api/rsvp', {
@@ -382,11 +384,14 @@ function RsvpCard({ c, onNext }: CardProps) {
           {attending === 'yes' && (
             <input type="number" name="guests" min={1} max={10} defaultValue={1} placeholder={c.rguests} />
           )}
-          <div style={{ position: 'fixed', bottom: -200, left: -200, pointerEvents: 'none', opacity: 0 }}>
-            <Turnstile ref={turnstileRef} siteKey={TURNSTILE_SITE_KEY}
-              onSuccess={setToken} onExpire={() => setToken(null)}
-              options={{ theme: 'light', appearance: 'execute' }} />
-          </div>
+          {turnstileReady && (
+            <div style={{ position: 'fixed', bottom: -200, left: -200, pointerEvents: 'none', opacity: 0 }}>
+              <Turnstile ref={turnstileRef} id="rsvp-turnstile" siteKey={TURNSTILE_SITE_KEY}
+                onSuccess={setToken} onExpire={() => setToken(null)}
+                onError={() => setToken(null)}
+                options={{ theme: 'light', size: 'invisible', refreshExpired: 'auto' }} />
+            </div>
+          )}
           <button type="submit" className="bd-btn bd-rsvp-submit" disabled={status === 'sending'}
             aria-busy={status === 'sending'}>
             {status === 'sending' && <span className="bd-btn-spinner" aria-hidden="true" />}
@@ -405,6 +410,7 @@ function WishesCard({ c, lang }: { c: typeof C[Lang]; lang: Lang }) {
   const [token, setToken] = useState<string | null>(null);
   const turnstileRef = useRef<TurnstileInstance>(null);
   const sectionRef = useSnapRecenter(status);
+  const turnstileReady = Boolean(TURNSTILE_SITE_KEY);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -421,7 +427,8 @@ function WishesCard({ c, lang }: { c: typeof C[Lang]; lang: Lang }) {
       setErrorText(c.messageRequired);
       return;
     }
-    if (!token) {
+    const turnstileToken = turnstileRef.current?.getResponse() || token;
+    if (!turnstileReady || !turnstileToken) {
       setErrorText(c.security);
       return;
     }
@@ -435,7 +442,7 @@ function WishesCard({ c, lang }: { c: typeof C[Lang]; lang: Lang }) {
           name,
           message,
           lang,
-          turnstileToken: token,
+          turnstileToken,
         }),
       });
       if (!response.ok) throw new Error('Wish failed');
@@ -459,11 +466,14 @@ function WishesCard({ c, lang }: { c: typeof C[Lang]; lang: Lang }) {
           <input type="hidden" name="lang" value={lang} />
           <input type="text" name="name" placeholder={c.name} required aria-required="true" maxLength={80} />
           <textarea name="message" placeholder={c.msg} required aria-required="true" maxLength={400} rows={3} />
-          <div style={{ position: 'fixed', bottom: -200, left: -200, pointerEvents: 'none', opacity: 0 }}>
-            <Turnstile ref={turnstileRef} siteKey={TURNSTILE_SITE_KEY}
-              onSuccess={setToken} onExpire={() => setToken(null)}
-              options={{ theme: 'light', appearance: 'execute' }} />
-          </div>
+          {turnstileReady && (
+            <div style={{ position: 'fixed', bottom: -200, left: -200, pointerEvents: 'none', opacity: 0 }}>
+              <Turnstile ref={turnstileRef} id="wishes-turnstile" siteKey={TURNSTILE_SITE_KEY}
+                onSuccess={setToken} onExpire={() => setToken(null)}
+                onError={() => setToken(null)}
+                options={{ theme: 'light', size: 'invisible', refreshExpired: 'auto' }} />
+            </div>
+          )}
           <button type="submit" className="bd-btn bd-rsvp-submit" disabled={status === 'sending'}
             aria-busy={status === 'sending'}>
             {status === 'sending' && <span className="bd-btn-spinner" aria-hidden="true" />}

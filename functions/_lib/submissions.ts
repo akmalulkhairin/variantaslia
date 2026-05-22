@@ -110,7 +110,13 @@ export async function verifyTurnstile(token: string, secret: string, ip?: string
     method: 'POST',
     body: form,
   });
-  const result = await response.json() as { success?: boolean };
+  const result = await response.json() as { success?: boolean; 'error-codes'?: string[] };
+  if (result.success !== true) {
+    console.warn('Turnstile verification failed', {
+      errorCodes: result['error-codes'] || [],
+      responseStatus: response.status,
+    });
+  }
   return result.success === true;
 }
 
